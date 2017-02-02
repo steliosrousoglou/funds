@@ -1,0 +1,22 @@
+{
+  "name": "funds",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steliosrousoglou/funds.git"
+  },
+  "author": "Allen Wang, Stylianos Rousoglou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/steliosrousoglou/funds/issues"
+  },
+  "homepage": "https://github.com/steliosrousoglou/funds#readme",
+  "dependencies": {
+    "mysql": "^2.13.0"
+  }
+}
