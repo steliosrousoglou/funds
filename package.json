@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/steliosrousoglou/funds#readme",
   "dependencies": {
+    "express": "^4.14.1",
     "mysql": "^2.13.0"
   }
 }
