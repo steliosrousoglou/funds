@@ -87,8 +87,8 @@ const getAward = post => {
  *      (can be any unique field of award)
  * e.g. to change the name of award with funding_body_ref 12345:
  *      updateAward({Name: "new name"}, {funding_body_ref: 12345})
- * @param {JSON object} post
- * @param {JSON object} which
+ * @param {JSON} post
+ * @param {JSON} which
  */
 const updateAward = (post, which) => {
     const query = 'UPDATE ' + tb_award + ' SET ? WHERE ?';
@@ -106,7 +106,7 @@ const updateAward = (post, which) => {
  * @param {Number} finance_award_no
  * @param {Number} my_finance_code
  * @param {Enum} Type
- * @param {Optional Number} EPSRC_voucher
+ * @param {Number} EPSRC_voucher
  * @param {String} Department
  * @param {Number} award_amount
  * @param {String} student_name
