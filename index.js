@@ -10,7 +10,7 @@ const db_name = 'funds';
 const tb_award = 'award_dev';
 const tb_projects = 'projects_dev';
 
-/* Create Database Connection */
+/* Create Database Connection Object*/
 var connection = mysql.createConnection({
     host: 'localhost',
     port: '3306',
@@ -19,8 +19,10 @@ var connection = mysql.createConnection({
     database: db_name,
 });
 
+/* Initialize App */
 var app = express();
 
+/* Connect to Database */
 connection.connect(function(err) {
     if(!err) {
         console.log("Connected to database.");
