@@ -46,7 +46,7 @@ connection.connect(function(err) {
  * @param {Date} end_date
  * @param {Number} amount
  * @param {String} status
- * @param {Date Range} fes_due
+ * @param {Range} fes_due
  */
 const addAward = (Body, Name, funding_body_ref, finance_award_no, start_date, end_date, amount, status, fes_due) => {
     const query = 'INSERT INTO ' + tb_award + ' SET ?'
@@ -65,7 +65,7 @@ const addAward = (Body, Name, funding_body_ref, finance_award_no, start_date, en
  * 'post' object contains any *one* valid field in the awards table with
  *      its corresponding value. e.g. to search for award with
  * funding_body_ref = 12345: getAward({funding_body_ref: 12345})
- * @param {JSON object} post
+ * @param {JSON} post
  * @return {Array} rows
  */
 const getAward = post => {
@@ -136,7 +136,7 @@ const addProject = (funding_body_ref, finance_award_no, my_finance_code, Type, E
  *      its corresponding value.
  * e.g. to search for funding_body_ref = 12345,
  *      call the method as follows: getProjects({funding_body_ref: 12345})
- * @param {JSON object} post
+ * @param {JSON} post
  * @return {Array} sum
  */
 const getProjects = (post) => {
