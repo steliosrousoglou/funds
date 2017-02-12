@@ -66,7 +66,7 @@ const addAward = (Body, Name, funding_body_ref, finance_award_no, start_date, en
  * Returns awards array with all matches
  * 'post' object contains any *one* valid field in the awards table with
  *      its corresponding value. e.g. to search for award with
- * funding_body_ref = 12345: getAward({funding_body_ref: 12345})
+ *      funding_body_ref = 12345: getAward({funding_body_ref: 12345})
  * @param {JSON} post
  * @return {Array} rows
  */
@@ -133,7 +133,7 @@ const addProject = (funding_body_ref, finance_award_no, my_finance_code, Type, E
 };
 
 /**
- * Returns project row with any matches
+ * Returns all project row matches (query is anything)
  * 'post' object contains any one valid field in the projects table with
  *      its corresponding value.
  * e.g. to search for funding_body_ref = 12345,
@@ -141,7 +141,7 @@ const addProject = (funding_body_ref, finance_award_no, my_finance_code, Type, E
  * @param {JSON} post
  * @return {Array} sum
  */
-const getProjects = (post) => {
+const getAllProjects = (post) => {
     const query = 'SELECT * FROM ' + tb_projects + ' WHERE ?';
     connection.query(query, post, function(err, rows) {
         if (!err) {
