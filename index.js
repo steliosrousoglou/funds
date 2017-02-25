@@ -22,13 +22,20 @@ var connection = mysql.createConnection({
 /* Initialize App */
 var app = express();
 
+app.use(express.static('client'));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 /* Connect to Database */
 connection.connect(function(err) {
     if(!err) {
         console.log("Connected to database.");
         //getAward({finance_award_no: 98765});
         //addAward("AHRC", "GRant2", "sdfasfccgdfg", 98765, "2016-05-05", "2020-05-05", 176543.76, "AS", "Aug-Oct 2018");
-        //updateAward({Name: "GRant2", Body: 'EPSRC'},{funding_body_ref: 'sdfasfccgdfg'});
+        //updateAward({end_date: "2023-05-03"},{funding_body_ref: 'sdfasfccgdfg'});
         //getAward({finance_award_no: 98765});
     } else {
         console.log("Error connecting to database, quitting ... \n\n");
@@ -153,4 +160,4 @@ const getAllProjects = (post) => {
 };
 
 /* Listen */
-app.listen(3000);
+app.listen(process.env.PORT);
