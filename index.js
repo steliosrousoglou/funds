@@ -47,27 +47,20 @@ connection.connect(function(err) {
 
 /**
  * Adds award to award database - funding_body_ref, finance_award_no unique
- * @param {String} Body
- * @param {String} Name
- * @param {String} funding_body_ref
- * @param {Number} finance_award_no
- * @param {Date} start_date
- * @param {Date} end_date
- * @param {Number} amount
- * @param {String} status
- * @param {Range} fes_due
+ * @param {json} post 
  */
-const addAward = (Body, Name, funding_body_ref, finance_award_no, start_date, end_date, amount, status, fes_due) => {
-    const query = 'INSERT INTO ' + tb_award + ' SET ?'
-    const post = {Body, Name, funding_body_ref, finance_award_no, start_date, end_date, amount, status, fes_due};
+const addAward = post => new Promise((resolve, reject) => {
+    const query = 'INSERT INTO ' + tb_award + ' SET ?';
     
     connection.query(query, post, function(err, rows) {
         if (!err)
             console.log('Added Award');
+            resolve();
         else
             console.log(err);
+            reject();
     });
-};
+});
 
 /**
  * Returns awards array with all matches
@@ -158,6 +151,15 @@ const getAllProjects = (post) => {
             console.log(err);
     }});
 };
+
+/*
+ * Endpoint to add award
+ */
+app.post('/add_award', (req, res) => {
+  addAward(req.body)
+  .then(() => res.send())
+  .catch(() => res.send('fail'));
+});
 
 /* Listen */
 app.listen(process.env.PORT);
