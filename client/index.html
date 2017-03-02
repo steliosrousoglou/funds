@@ -18,65 +18,66 @@
 
  	//	initialize hidden forms and submit/add event handlers
   	window.onload=function() {
-	  	document.getElementById("awardForm").style.display="none";
-		document.getElementById("allocationForm").style.display="none";
-		document.getElementById("studentForm").style.display="none";
-		document.getElementById("collaborationForm").style.display="none";
-		var studentFormSearch = document.getElementById("studentSubmit");
-		studentFormSearch.addEventListener("click", studentFormReq, false);
-		studentFormSearch.dbReq = 0;
-		var studentFormAdd = document.getElementById("studentAdd");
-		studentFormAdd.addEventListener("click", studentFormReq, false);
-		studentFormAdd.dbReq = 1;
-
-		//add warnings such that students can only be added with minimal required data (date etc)
-		//I think you should put the event listeners into a separate function that gets called
-		//when the window loads, that way it can also return and display errors perhaps
-
-		var awardFormSearch = document.getElementById("awardSubmit");
-		awardFormSearch.addEventListener("click", awardFormReq, false);
-		awardFormSearch.dbReq = 0;
-		var awardFormAdd = document.getElementById("awardAdd");
-		awardFormAdd.addEventListener("click", awardFormReq, false);
-		awardFormAdd.dbReq = 1;
-		// document.getElementByName("jes").value = "no";
-
+  	  document.getElementById("awardForm").style.display="none";
+  		document.getElementById("allocationForm").style.display="none";
+  		document.getElementById("studentForm").style.display="none";
+  		document.getElementById("collaborationForm").style.display="none";
+  		var studentFormSearch = document.getElementById("studentSubmit");
+  		studentFormSearch.addEventListener("click", studentFormReq, false);
+  		studentFormSearch.dbReq = 0;
+  		var studentFormAdd = document.getElementById("studentAdd");
+  		studentFormAdd.addEventListener("click", studentFormReq, false);
+  		studentFormAdd.dbReq = 1;
+  
+  		//add warnings such that students can only be added with minimal required data (date etc)
+  		//I think you should put the event listeners into a separate function that gets called
+  		//when the window loads, that way it can also return and display errors perhaps
+  
+  		var awardFormSearch = document.getElementById("awardSearch");
+  		awardFormSearch.addEventListener("click", awardFormReq, false);
+  		awardFormSearch.dbReq = 0;
+  		var awardFormAdd = document.getElementById("awardAdd");
+  		awardFormAdd.addEventListener("click", awardFormReq, false);
+  		awardFormAdd.dbReq = 1;
+  		var awardFormAll = document.getElementById("showAllAward");
+  		awardFormAll.addEventListener("click", awardFormReq, false);
+  		awardFormAll.dbReq = 2;
 	}
-	// document.getElementById("awardBtn").addEventListener("click", renderForm(0));
-	// document.getElementById("allocationBtn").addEventListener("click", renderForm(1));
-	// document.getElementById("studentBtn").addEventListener("click", renderForm(2));
-	// document.getElementById("collaborationBtn").addEventListener("click", renderForm(3));
-
-	//write functions for each query, one for insert, one for submit? or just make different request based on 
-	//the button search or insert (add button to front end then maybe modify header for the fetch request ot the server)
+	//For Award search, provide a show all awards list, with hyperlinks that bring up a specific award view
 	function studentFormReq (evt) {
 		evt.preventDefault();
 		var formInputs = document.getElementById("studentForm").elements;
 		var obj = {};
-		obj["db_req"] = evt.target.dbReq? "add" : "search";
 		console.log(formInputs);
 		var invalid = false;
-		for(var i = 0 ; i < formInputs.length ; i++){
+		for(var i = 0 ; i < formInputs.length ;i++) {
 	        var item = formInputs.item(i);
-	        obj[item.name] = item.value;
-	        console.log(item.value);
-	        if(obj[item.name].length == 0) { 
+	        if (item.value.length <= 1) {
 	        	invalid = true;
 	        	console.log("HERE");
 	        }
+	        else {
+	          obj[item.name] = item.value;
+	          console.log(item.value);
+	        }
 	    }
 	    if (invalid && evt.target.dbReq == 1) {
-	    	console.log("Please complete all fields");
 	    	throw("Please complete all fields");
 	    }
 	    console.log(obj);
 	    var jsonObj = JSON.stringify(obj);
+	    //try catch here maybe?
 	    console.log(jsonObj);
+	    var endpoint = evt.target.dbReq? '/add_student' : '/get_student';
 	    //probably havea try-Catch here with promise or something
-	    fetch('/add_student', {
+	    fetch(endpoint, {
 		    method: 'POST',
+		    headers: {
+		      'Content-Type': 'application/json',
+		    },
 		    body: jsonObj })
-		  .then(res => res.JSON()) 
+		  .then(res => res.text())
+		  .then(res => console.log(JSON.parse(res))) // pass to display results function
 		  .catch(() => alert("Failed to add student"));
 		// update, search, and add will all return a response that can be jsonified
 		//	and displayed in a grid
@@ -106,14 +107,23 @@
 	    var jsonObj = JSON.stringify(obj);
 	    //try catch here maybe?
 	    console.log(jsonObj);
-	    fetch('/get_award', {
+	    var endpoint;
+	    // cevt.target.dbReq? '/add_award' : '/get_award';
+	    body = evt.target.dbReq == 2? "" : body;
+	    fetch('/get_all_awards', {
 		    method: 'POST',
 		    headers: {
 		      'Content-Type': 'application/json',
 		    },
 		    body: jsonObj })
-		    .then(res => JSON.parse(res.text()))
-		  .then(res => fn(res)) // Results display function
+		    .then(res => res.json())
+		    .then(res => console.log(res))
+		    // .then(res => console.log(res))
+		  //   .then(res => {
+		  //     if (res === 'fail') alert("Award Query Failed");
+		  //     else JSON.parse(res.text())
+		  //     })
+		  // .then(res => console.log(res)) // Pass json to a results display function
 		  .catch(() => alert("Failed to add student"));
 		  
 		// var data = [];
@@ -163,8 +173,9 @@
 		<input name="fes_due" type="text" placeholder="FES Due"> 
 		<input name="start_date" type="date" placeholder="Start Date">
 	    <input name="end_date" type="date" placeholder="End Date">
-		<input id="awardSubmit" type="submit" value="" name="submit">
-		<input id="awardAdd" type="submit" value="" name="add">
+		<input id="awardSearch" type="submit" placeholder="Search" name="submit">
+		<input id="awardAdd" type="submit" placeholder="Add" name="add">
+		<input id="showAllAward" type="submit" placeholder="Show All Awards" name="showAllAward">
 	</form>
 
 	<form id="allocationForm" name="allocationForm" method="post" enctype="multipart/form-data">
