@@ -1,6 +1,7 @@
 /* Servers */
-var express = require('express');
-var mysql = require('mysql');
+const bodyParser = require('body-parser');
+const express = require('express');
+const mysql = require('mysql');
 
 /* Database Name */
 const db_name = 'funds';
@@ -23,6 +24,13 @@ var connection = mysql.createConnection({
 var app = express();
 
 app.use(express.static('client'));
+app.use(bodyParser.json());
+app.use(bodyParser.text());
+app.use(bodyParser.urlencoded({
+  extended: true,
+}));
+
+app.use(express.static('client'));
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -37,6 +45,8 @@ connection.connect(function(err) {
         //addAward("AHRC", "GRant2", "sdfasfccgdfg", 98765, "2016-05-05", "2020-05-05", 176543.76, "AS", "Aug-Oct 2018");
         //updateAward({end_date: "2023-05-03"},{funding_body_ref: 'sdfasfccgdfg'});
         //getAward({finance_award_no: 98765});
+        //addProject()
+        //getAllProjects = (post)
     } else {
         console.log("Error connecting to database, quitting ... \n\n");
         process.exit(1);
@@ -53,12 +63,14 @@ const addAward = post => new Promise((resolve, reject) => {
     const query = 'INSERT INTO ' + tb_award + ' SET ?';
     
     connection.query(query, post, function(err, rows) {
-        if (!err)
+        if (!err) {
             console.log('Added Award');
             resolve();
-        else
+        }
+        else {
             console.log(err);
             reject();
+        }
     });
 });
 
@@ -70,16 +82,18 @@ const addAward = post => new Promise((resolve, reject) => {
  * @param {JSON} post
  * @return {Array} rows
  */
-const getAward = post => {
+const getAward = post => new Promise((resolve, reject) => {
+    console.log(post);
     const query = 'SELECT * FROM ' + tb_award + ' WHERE ?';
     connection.query(query, post, function(err, rows) {
         if (!err) {
-            console.log(rows);
-            return rows;
+            console.log(rows[0]);
+            resolve(rows[0]);
         } else {
             console.log(err);
+            reject(err);
     }});
-};
+});
 
 /**
  * Updates info of specified award
@@ -160,6 +174,16 @@ app.post('/add_award', (req, res) => {
   .then(() => res.send())
   .catch(() => res.send('fail'));
 });
+
+/*
+ * Endpoint to get award
+ */
+app.post('/get_award', (req, res) => {
+  getAward(req.body)
+  .then(res => res.send(res))
+  .catch(() => res.send('fail'));
+});
+
 
 /* Listen */
 app.listen(process.env.PORT);
