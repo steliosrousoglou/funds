@@ -13,180 +13,58 @@
   <button id="collaborationBtn" onClick="renderForm(3)">Collaborators</button>
   
   <!--<script src="fetch.js"></script>-->
-  <!--<script src="client.js"></script>-->
-  <script>
+  <script src="script.js"></script>
 
- 	//	initialize hidden forms and submit/add event handlers
-  	window.onload=function() {
-  	  document.getElementById("awardForm").style.display="none";
-  		document.getElementById("allocationForm").style.display="none";
-  		document.getElementById("studentForm").style.display="none";
-  		document.getElementById("collaborationForm").style.display="none";
-  		var studentFormSearch = document.getElementById("studentSubmit");
-  		studentFormSearch.addEventListener("click", studentFormReq, false);
-  		studentFormSearch.dbReq = 0;
-  		var studentFormAdd = document.getElementById("studentAdd");
-  		studentFormAdd.addEventListener("click", studentFormReq, false);
-  		studentFormAdd.dbReq = 1;
-  
-  		//add warnings such that students can only be added with minimal required data (date etc)
-  		//I think you should put the event listeners into a separate function that gets called
-  		//when the window loads, that way it can also return and display errors perhaps
-  
-  		var awardFormSearch = document.getElementById("awardSearch");
-  		awardFormSearch.addEventListener("click", awardFormReq, false);
-  		awardFormSearch.dbReq = 0;
-  		var awardFormAdd = document.getElementById("awardAdd");
-  		awardFormAdd.addEventListener("click", awardFormReq, false);
-  		awardFormAdd.dbReq = 1;
-  		var awardFormAll = document.getElementById("showAllAward");
-  		awardFormAll.addEventListener("click", awardFormReq, false);
-  		awardFormAll.dbReq = 2;
-	}
-	//For Award search, provide a show all awards list, with hyperlinks that bring up a specific award view
-	function studentFormReq (evt) {
-		evt.preventDefault();
-		var formInputs = document.getElementById("studentForm").elements;
-		var obj = {};
-		console.log(formInputs);
-		var invalid = false;
-		for(var i = 0 ; i < formInputs.length ;i++) {
-	        var item = formInputs.item(i);
-	        if (item.value.length <= 1) {
-	        	invalid = true;
-	        	console.log("HERE");
-	        }
-	        else {
-	          obj[item.name] = item.value;
-	          console.log(item.value);
-	        }
-	    }
-	    if (invalid && evt.target.dbReq == 1) {
-	    	throw("Please complete all fields");
-	    }
-	    console.log(obj);
-	    var jsonObj = JSON.stringify(obj);
-	    //try catch here maybe?
-	    console.log(jsonObj);
-	    var endpoint = evt.target.dbReq? '/add_student' : '/get_student';
-	    //probably havea try-Catch here with promise or something
-	    fetch(endpoint, {
-		    method: 'POST',
-		    headers: {
-		      'Content-Type': 'application/json',
-		    },
-		    body: jsonObj })
-		  .then(res => res.text())
-		  .then(res => console.log(JSON.parse(res))) // pass to display results function
-		  .catch(() => alert("Failed to add student"));
-		// update, search, and add will all return a response that can be jsonified
-		//	and displayed in a grid
-	};
-
-	function awardFormReq (evt) {
-		evt.preventDefault();
-		var formInputs = document.getElementById("awardForm").elements;
-		var obj = {};
-		console.log(formInputs);
-		var invalid = false;
-		for(var i = 0 ; i < formInputs.length ;i++) {
-	        var item = formInputs.item(i);
-	        if (item.value.length <= 1) {
-	        	invalid = true;
-	        	console.log("HERE");
-	        }
-	        else {
-	          obj[item.name] = item.value;
-	          console.log(item.value);
-	        }
-	    }
-	    if (invalid && evt.target.dbReq == 1) {
-	    	throw("Please complete all fields");
-	    }
-	    console.log(obj);
-	    var jsonObj = JSON.stringify(obj);
-	    //try catch here maybe?
-	    console.log(jsonObj);
-	    var endpoint;
-	    // cevt.target.dbReq? '/add_award' : '/get_award';
-	    body = evt.target.dbReq == 2? "" : body;
-	    fetch('/get_all_awards', {
-		    method: 'POST',
-		    headers: {
-		      'Content-Type': 'application/json',
-		    },
-		    body: jsonObj })
-		    .then(res => res.json())
-		    .then(res => console.log(res))
-		    // .then(res => console.log(res))
-		  //   .then(res => {
-		  //     if (res === 'fail') alert("Award Query Failed");
-		  //     else JSON.parse(res.text())
-		  //     })
-		  // .then(res => console.log(res)) // Pass json to a results display function
-		  .catch(() => alert("Failed to add student"));
-		  
-		// var data = [];
-		// data[0] = formInputs["first_name"];
-		// console.log(data);
-	};
-
-	function renderForm(a) {
-		switch (a) {
-			case 0:
-				document.getElementById("awardForm").style.display="block";
-				document.getElementById("allocationForm").style.display="none";
-				document.getElementById("studentForm").style.display="none";
-			    document.getElementById("collaborationForm").style.display="none";
-			    break;
-			case 1:
-				document.getElementById("awardForm").style.display="none";
-				document.getElementById("allocationForm").style.display="block";
-				document.getElementById("studentForm").style.display="none";
-			    document.getElementById("collaborationForm").style.display="none";
-			    break;
-			case 2:
-				document.getElementById("awardForm").style.display="none";
-				document.getElementById("allocationForm").style.display="none";
-				document.getElementById("studentForm").style.display="block";
-			    document.getElementById("collaborationForm").style.display="none";
-			    break;
-			case 3:
-				document.getElementById("awardForm").style.display="none";
-				document.getElementById("allocationForm").style.display="none";
-				document.getElementById("studentForm").style.display="none";
-			    document.getElementById("collaborationForm").style.display="block";
-			    break;
-
-		}
-	}
-  </script>
   <br><br>
   	<form id="awardForm" name="awardForm" method="post" enctype="multipart/form-data">
 	  	<input name="Body" type="text" placeholder="Funding Body"> 
 	  	<input name="Name" type="text" placeholder="Award Name">
+	  	<input name="finance_award_no" type="text" placeholder="My Finance Award No.">
 	    <input name="funding_body_ref" type="text" placeholder="Funding Body Reference"> 
-	    Award Type: <input class="checkbox-inline" type="radio" name='type' value="1">List here
-	    Jes: <input class = "checkbox-inline" type="radio" name='jes' value="0">No
-		<input class = "checkbox-inline" type="radio" name='jes' value="1">Yes
-		<input name="award_amount" type="number" step="0.01" placeholder="Award amount">
+  		Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a"
+  			</select>
+		<input name="amount" type="number" step="0.01" placeholder="Award amount">
 		<input name="fes_due" type="text" placeholder="FES Due"> 
 		<input name="start_date" type="date" placeholder="Start Date">
 	    <input name="end_date" type="date" placeholder="End Date">
-		<input id="awardSearch" type="submit" placeholder="Search" name="submit">
-		<input id="awardAdd" type="submit" placeholder="Add" name="add">
-		<input id="showAllAward" type="submit" placeholder="Show All Awards" name="showAllAward">
+	    <input name="status" type="text" placeholder="Status">
+	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="awardSearch" name="search" type="submit">Search</button>
+	    <button id="awardAdd" name="add" type="submit">Add</button>
+		<!--<input id="showAllAward" type="submit" placeholder="Show All Awards" name="showAllAward">-->
 	</form>
 
 	<form id="allocationForm" name="allocationForm" method="post" enctype="multipart/form-data">
 	    <input name="funding_body_ref" type="text" placeholder="Funder Reference"> 
 	    <input name="finance_award_no" type="number" placeholder="Award Number">
 	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    Award Type:<select name="type">
+			  		<option value="Studentship">Studentship</option>
+			  		<option value="Fellowship">Fellowship</option>
+			  		<option value="Staff">Staff</option>
+			  		<option value="Vacation">Vacation</option>
+		  		</select>
+		<input name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
 	    <input name="department" type="text" placeholder="Department">
-	    <input name="supervisor" type="text" placeholder="Supervisor">
-	    Award Type: <input class="checkbox-inline" type="radio" name='type' value="1">List here
+	    <input name="amount" type="number" step="0.01" placeholder="Allocation amount">
+	    <input name="first_name" type="text" placeholder="First Name">
+	    <input name="last_name" type="text" placeholder="Last Name">
+  		Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a"
+  			</select>
 	    <input name="start_date" type="date" placeholder="Start Date">
 	    <input name="end_date" type="date" placeholder="End Date">
+	    <input name="form_s" type="text" placeholder="Form S">
+	    <input name="duration" type="text" placeholder="Duration">
+	    <input name="supervisor" type="text" placeholder="Supervisor">
+	    <input name="student_id" type="text" placeholder="Student ID">
+	    <input name="fte" type="text" placeholder="FTE">
+	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
 		<input id="allocationSubmit" type="submit" value="Search" name="search">
 		<input id="allocationAdd" type="submit" value="Add" name="add">
 	</form>

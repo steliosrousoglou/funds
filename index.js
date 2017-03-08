@@ -9,11 +9,12 @@ const db_name = 'funds';
 /* Database Table Names */
 // Award table
 const tb_award = 'award_dev';
+const tb_partners = 'partners_dev';
 const tb_projects = 'projects_dev';
 
 /* Create Database Connection Object*/
 var connection = mysql.createConnection({
-    host: 'localhost',
+    host: process.env.IP,
     port: '3306',
     user: 'sr692',
     password: '',
@@ -41,6 +42,7 @@ app.use(function(req, res, next) {
 connection.connect(function(err) {
     if(!err) {
         console.log("Connected to database.");
+        
         //getAward({finance_award_no: '*'});
         //addAward("AHRC", "GRant2", "sdfasfccgdfg", 98765, "2016-05-05", "2020-05-05", 176543.76, "AS", "Aug-Oct 2018");
         //updateAward({end_date: "2023-05-03"},{funding_body_ref: 'sdfasfccgdfg'});
@@ -48,6 +50,7 @@ connection.connect(function(err) {
         //addProject()
         //addAward({Body: "EPSRC", Name: "GRant1", funding_body_ref: "ABCBA", finance_award_no: 12309, start_date: "2018-05-05", end_date: "2022-05-05", amount: 333333, status: "KP", fes_due: "Sep-Nov 2020"});
         //getAllProjects = (post)
+        getTotalFunding();
     } else {
         console.log("Error connecting to database, quitting ... \n\n");
         process.exit(1);
@@ -83,17 +86,17 @@ const addAward = post => new Promise((resolve, reject) => {
  * @param {JSON} post
  * @return {Array} rows
  */
-const getAward = post => {//new Promise((resolve, reject) => {
+const getAward = post => new Promise((resolve, reject) => {
     const query = 'SELECT * FROM ' + tb_award + ' WHERE ?';
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
-            //resolve(rows);
+            resolve(rows);
         } else {
             console.log(err);
-            //reject(err);
+            reject(err);
     }});
-};//);
+});
 
 /**
  * Updates info of specified award
@@ -145,7 +148,7 @@ const addProject = (post) => new Promise ((resolve, reject) => {
     });
 });
 
-/**
+/*
  * Returns all project row matches (query is anything)
  * 'post' object contains any one valid field in the projects table with
  *      its corresponding value.
@@ -167,12 +170,37 @@ const getAllProjects = (post) => new Promise((resolve, reject) => {
 });
 
 /*
+ *  Returns JSON object containing total
+ *  award amounts from each funding body
+ *  @return {JSON} totals
+ */
+const getTotalFunding = () => new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM ' + tb_award;
+    connection.query(query, function(err, rows) {
+        if (!err) {
+            var dict = {};
+            for (var i = 0; i < rows.length; i++) {
+                console.log(rows[i].Body);
+                dict[rows[i].Body] = (dict[rows[i].Body] || 0) + rows[i].amount;
+            }
+            console.log(JSON.stringify(dict));
+            resolve(dict);
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+/*
  * Endpoint to add award
  */
 app.post('/add_award', (req, res) => {
   addAward(req.body)
   .then(() => res.send('success'))
-  .catch(() => res.send('fail'));
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
 });
 
 /*
@@ -182,8 +210,8 @@ app.post('/get_award', (req, res) => {
   getAward(req.body)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
-  .catch((err) => {
-      console.log(err);
+  .catch(e => {
+      console.log(e);
       res.send('fail');
   })
 });
@@ -195,8 +223,8 @@ app.post('/get_all_awards', (req, res) => {
   getAllAwards()
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
-  .catch((err) => {
-      console.log(err);
+  .catch(e => {
+      console.log(e);
       res.send('fail');
   })
 });
@@ -208,8 +236,8 @@ app.post('/update_award', (req, res) => {
   updateAward(req.body.post, req.body.which)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
-  .catch((err) => {
-      console.log(err);
+  .catch(e => {
+      console.log(e);
       res.send('fail');
   })
 });
@@ -220,7 +248,10 @@ app.post('/update_award', (req, res) => {
 app.post('/add_project', (req, res) => {
   addProject(req.body)
   .then(() => res.send('success'))
-  .catch(() => res.send('fail'));
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
 });
 
 /*
@@ -230,8 +261,18 @@ app.post('/get_project', (req, res) => {
   getAllProjects(req.body)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
-  .catch((err) => {
-      console.log(err);
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+app.post('/get_total_funding', (req, res) => {
+    getTotalFunding()
+    .then(res => JSON.stringify(res))
+    .then(s => res.send(s))
+    .catch(e => {
+      console.log(e);
       res.send('fail');
   })
 });
