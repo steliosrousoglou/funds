@@ -99,6 +99,26 @@ const getAward = post => new Promise((resolve, reject) => {
 });
 
 /**
+ * Returns projects array with all matches
+ * 'post' object contains any *one* valid field in the awards table with
+ *      its corresponding value. e.g. to search for award with
+ *      funding_body_ref = 12345: getAward({funding_body_ref: 12345})
+ * @param {JSON} post
+ * @return {Array} rows
+ */
+const getProject = post => new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM ' + tb_projects + ' WHERE ?';
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            console.log(rows);
+            resolve(rows);
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+/**
  * Updates info of specified award
  * 'post' object contains any number of valid fields in
  *      the awards table with its corresponding new values.
@@ -258,6 +278,16 @@ app.post('/add_project', (req, res) => {
  * Endpoint to get project
  */
 app.post('/get_project', (req, res) => {
+  getProject(req.body)
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+app.post('/get_all_projects', (req, res) => {
   getAllProjects(req.body)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
