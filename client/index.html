@@ -3,20 +3,57 @@
 <!-- <script type="text/javascript" name="script.js"></script> -->
 <head>
   <meta charset="UTF-8">
-  <title>CS50 | Swipe</title>
+  <title>Studentship Database</title>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-  <button id="awardBtn" onClick="renderForm(0)">Awards</button>
+
+	<!--Nav bar with 3 options for dropdown- later on add hidden fields for read only-->
+	<div class="dropdown">
+	  <button class="dropbtn">Awards</button>
+	  <div class="dropdown-content">
+	    <p id="awardBtnSearch" onClick="clearAllForms();renderAwardForm(1);">Search</p>
+	    <p id="awardBtnUpdate" onClick="clearAllForms();renderAwardForm(2);">Update</p>
+	    <p id="awardBtnAdd" onClick="clearAllForms();renderAwardForm(3);">Add</p>
+	  </div>
+	</div>
+	<div class="dropdown">
+	  <button class="dropbtn">Allocations</button>
+	  <div class="dropdown-content">
+	    <p id="allocationBtnSearch" onClick="clearAllForms();renderAllocationForm(1);">Search</p>
+	    <p id="allocationBtnUpdate" onClick="clearAllForms();renderAllocationForm(2);">Update</p>
+	    <p id="allocationBtnAdd" onClick="clearAllForms();renderAllocationForm(3);">Add</p>
+	  </div>
+	</div>
+	<div class="dropdown">
+	  <button class="dropbtn">Students</button>
+	  <div class="dropdown-content">
+	    <p id="studentBtnSearch" onClick="clearAllForms();renderStudentForm(1);">Search</p>
+	    <p id="studentBtnUpdate" onClick="clearAllForms();renderStudentForm(2);">Update</p>
+	    <p id="studentBtnAdd" onClick="clearAllForms();renderStudentForm(3);">Add</p>
+	  </div>
+	</div>
+	<div class="dropdown">
+	  <button class="dropbtn">Collaborators</button>
+	  <div class="dropdown-content">
+	  	<p id="collaboratorBtnSearch" onClick="clearAllForms();renderCollaboratorForm(1);">Search</p>
+	  	<p id="collaboratorBtnUpdate" onClick="clearAllForms();renderCollaboratorForm(2);">Update</p>
+	  	<p id="collaboratorBtnAdd" onClick="clearAllForms();renderCollaboratorForm(3);">Add</p>
+	</div>
+	</div>
+	
+  <!-- <button id="awardBtn" onClick="renderForm(0)">Awards</button>
   <button id="allocationBtn" onClick="renderForm(1)">Allocation</button>
   <button id="studentBtn" onClick="renderForm(2)">Students</button>
-  <button id="collaborationBtn" onClick="renderForm(3)">Collaborators</button>
+  <button id="collaborationBtn" onClick="renderForm(3)">Collaborators</button> -->
   
   <!--<script src="fetch.js"></script>-->
   <script src="script.js"></script>
 
   <br><br>
-  	<form id="awardForm" name="awardForm" method="post" enctype="multipart/form-data">
+  	<!-- <form id="awardForm" name="awardForm" method="post" enctype="multipart/form-data">
 	  	<input name="Body" type="text" placeholder="Funding Body"> 
 	  	<input name="Name" type="text" placeholder="Award Name">
 	  	<input name="finance_award_no" type="text" placeholder="My Finance Award No.">
@@ -34,10 +71,64 @@
 	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
 	    <button id="awardSearch" name="search" type="submit">Search</button>
 	    <button id="awardAdd" name="add" type="submit">Add</button>
-		<!--<input id="showAllAward" type="submit" placeholder="Show All Awards" name="showAllAward">-->
+	    <button id="showAllAward" name="showAll" type="submit">Show All Awards</button>
+	</form> -->
+	
+	<!-- Various forms for sending json -->
+	<form id="awardFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
+	  	<input name="Body" type="text" placeholder="Funding Body"> 
+	  	<input name="Name" type="text" placeholder="Award Name">
+	  	<input name="finance_award_no" type="text" placeholder="My Finance Award No.">
+	    <input name="funding_body_ref" type="text" placeholder="Funding Body Reference"> 
+  		Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+  			</select>
+		<input name="amount" type="number" step="0.01" placeholder="Award amount">
+		<input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <button id="awardSearch" name="search" type="submit">Search</button>
+	    <button id="showAllAward" name="showAll" type="submit">Show All Awards</button>
 	</form>
 
-	<form id="allocationForm" name="allocationForm" method="post" enctype="multipart/form-data">
+	<form id="awardFormUpdate" name="awardForm" method="post" enctype="multipart/form-data"style="display: none;">
+	  	<input name="Body" type="text" placeholder="Funding Body"> 
+	  	<input name="Name" type="text" placeholder="Award Name">
+	  	<input name="finance_award_no" type="text" placeholder="My Finance Award No.">
+	    <input name="funding_body_ref" type="text" placeholder="Funding Body Reference"> 
+  		Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+  			</select>
+		<input name="amount" type="number" step="0.01" placeholder="Award amount">
+		<input name="fes_due" type="text" placeholder="FES Due"> 
+		<input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <input name="status" type="text" placeholder="Status">
+	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="awardUpdate" name="update" type="submit">Update</button>
+	</form>
+
+	<form id="awardFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
+	  	<input name="Body" type="text" placeholder="Funding Body"> 
+	  	<input name="Name" type="text" placeholder="Award Name">
+	  	<input name="finance_award_no" type="text" placeholder="My Finance Award No.">
+	    <input name="funding_body_ref" type="text" placeholder="Funding Body Reference"> 
+  		Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+  			</select>
+		<input name="amount" type="number" step="0.01" placeholder="Award amount">
+		<input name="fes_due" type="text" placeholder="FES Due"> 
+		<input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <input name="status" type="text" placeholder="Status">
+	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="awardAdd" name="add" type="submit">Add</button>
+	</form>
+
+
+<!-- 	<form id="allocationForm" name="allocationForm" method="post" enctype="multipart/form-data">
 	    <input name="funding_body_ref" type="text" placeholder="Funder Reference"> 
 	    <input name="finance_award_no" type="number" placeholder="Award Number">
 	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
@@ -67,33 +158,337 @@
 	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
 		<input id="allocationSubmit" type="submit" value="Search" name="search">
 		<input id="allocationAdd" type="submit" value="Add" name="add">
+	</form> -->
+
+		<form id="allocationFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="funding_body_ref" type="text" placeholder="Funder Reference"> 
+	    <input name="finance_award_no" type="number" placeholder="Award Number">
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    Allocation Type:<select name="type">
+			  		<option value='Studentship'>Studentship</option>
+			  		<option value="Fellowship">Fellowship</option>
+			  		<option value="Staff">Staff</option>
+			  		<option value="Vacation">Vacation</option>
+		  		</select>
+		<input name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
+	    <input name="department" type="text" placeholder="Department">
+	    <input name="faculty" type="text" placeholder="Faculty/PI">
+	    <input name="amount" type="number" step="0.01" placeholder="Allocation amount">
+	    <!--<input name="first_name" type="text" placeholder="First Name">-->
+	    <!--<input name="last_name" type="text" placeholder="Last Name">-->
+  		Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+  			</select>
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <input name="duration" type="text" placeholder="Duration">
+	    <input name="supervisor" type="text" placeholder="Supervisor">
+	    <!--<input name="student_id" type="text" placeholder="Student ID">-->
+		<button id="allocationSearch" name="search" type="submit">Search</button>
+		<button id="showAllAllocation" name="showAll" type="submit">Show All</button>
 	</form>
 
-	<form id="studentForm" name="studentForm" method="post" enctype="multipart/form-data">
-		<h3>Enter one or more fields to search</h3>
+	<form id="allocationFormUpdate" name="allocationForm" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="funding_body_ref" type="text" placeholder="Funder Reference"> 
+	    <input name="finance_award_no" type="number" placeholder="Award Number">
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    Allocation Type:<select name="type">
+			  		<option value="Studentship">Studentship</option>
+			  		<option value="Fellowship">Fellowship</option>
+			  		<option value="Staff">Staff</option>
+			  		<option value="Vacation">Vacation</option>
+		  		</select>
+		<input name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
+	    <input name="department" type="text" placeholder="Department">
+	    <input name="faculty" type="text" placeholder="Faculty/PI">
+	    <input name="amount" type="number" step="0.01" placeholder="Allocation amount">
+	    <!--<input name="first_name" type="text" placeholder="First Name">-->
+	    <!--<input name="last_name" type="text" placeholder="Last Name">-->
+  		Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+  			</select>
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <input name="form_s" type="text" placeholder="Form S">
+	    <input name="duration" type="text" placeholder="Duration">
+	    <input name="supervisor" type="text" placeholder="Supervisor">
+	    <!--<input name="student_id" type="text" placeholder="Student ID">-->
+	    <input name="fte" type="text" placeholder="FTE">
+	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+		<button id="allocationUpdate" name="update" type="submit">Update</button>
+	</form>
+
+	<form id="allocationFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="funding_body_ref" type="text" placeholder="Funder Reference"> 
+	    <input name="finance_award_no" type="number" placeholder="Award Number">
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    Allocation Type:<select name="type">
+			  		<option value='Studentship'>Studentship</option>
+			  		<option value="Fellowship">Fellowship</option>
+			  		<option value="Staff">Staff</option>
+			  		<option value="Vacation">Vacation</option>
+		  		</select>
+		<input name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
+	    <input name="department" type="text" placeholder="Department">
+	    <input name="faculty" type="text" placeholder="Faculty/PI">
+	    <input name="amount" type="number" step="0.01" placeholder="Allocation amount">
+	    <!--<input name="first_name" type="text" placeholder="First Name">-->
+	    <!--<input name="last_name" type="text" placeholder="Last Name">-->
+  		Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+  			</select>
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <input name="form_s" type="text" placeholder="Form S">
+	    <input name="duration" type="text" placeholder="Duration">
+	    <input name="supervisor" type="text" placeholder="Supervisor">
+	    <!--<input name="student_id" type="text" placeholder="Student ID">-->
+	    <input name="fte" type="text" placeholder="FTE">
+	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="allocationAdd" name="add" type="submit">Add</button>
+	</form>
+
+	<!-- <form id="studentForm" name="studentForm" method="post" enctype="multipart/form-data">
 	    <input name="first_name" type="text" placeholder="First Name"> 
 	    <input name="surname" type="text" placeholder="Surname">
-	    <input name="funding_amount" type="number" step="0.01" placeholder="Funding Amount">
-	    Jes: 
-		<select name="jes" form="studentForm">
-		  <option value="0">No</option>
-		  <option value="1">Yes</option>
-		</select>
-		<input name="start_date" type="date" placeholder="Start Date">
+	    <input name="student_id" type="text" placeholder="Student ID">
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="start_date" type="date" placeholder="Start Date">
 	    <input name="end_date" type="date" placeholder="End Date">
-	    <input id="studentSubmit" type="submit" value="Submit" name="submit"> <br>
-	    <input id="studentAdd" type="submit" value="Add" name="add">
+		<input name="fte" type="text" placeholder="FTE">
+		<input name="form_s" type="text" placeholder="Form S">
+	    <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
+	    <input name="stipend" type="number" step="0.01" placeholder="Stipend">
+	    <input name="FEE" type="number" step="0.01" placeholder="FEE">
+	    <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
+		<input name="other" type="number" step="0.01" placeholder="Other">
+		OFA: <select name="ofa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+  			</select>
+		DSA: <select name="dsa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+			</select>
+		Internship: <select name="dsa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+			</select>
+	    Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+  			</select>
+  		<input name="collaborator" type="text" placeholder="Collaborator">
+  		<input name="collab_code" type="text" placeholder="Collaborator Code">
+  		<input name="collab_amount" type="number" step="0.01" placeholder="Collab Amount">
+  		<textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="studentSearch" name="search" type="submit">Search</button>
+	    <button id="studentAdd" name="add" type="submit">Add</button>
+	    <button id="showAllStudent" name="showAll" type="submit">Show All Students</button>
+	</form> -->
+
+		<form id="studentFormSearch" name="studentForm" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="first_name" type="text" placeholder="First Name"> 
+	    <input name="surname" type="text" placeholder="Surname">
+	    <input name="student_id" type="text" placeholder="Student ID">
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+		OFA: <select name="ofa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+  			</select>
+		DSA: <select name="dsa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+			</select>
+		Internship: <select name="dsa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+			</select>
+	    Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+  			</select>
+	    <button id="studentSearch" name="search" type="submit">Search</button>
+	    <button id="showAllStudent" name="showAll" type="submit">Show All Students</button>
 	</form>
 
-	<form id="collaborationForm" name="collaborationForm" method="post" enctype="multipart/form-data">
-		<h3>Enter one or more fields to search</h3>
+	<form id="studentFormUpdate" name="studentForm" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="first_name" type="text" placeholder="First Name"> 
+	    <input name="surname" type="text" placeholder="Surname">
+	    <input name="student_id" type="text" placeholder="Student ID">
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+		<input name="fte" type="text" placeholder="FTE">
+		<input name="form_s" type="text" placeholder="Form S">
+	    <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
+	    <input name="stipend" type="number" step="0.01" placeholder="Stipend">
+	    <input name="FEE" type="number" step="0.01" placeholder="FEE">
+		<input name="other" type="number" step="0.01" placeholder="Other">
+		OFA: <select name="ofa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+  			</select>
+		DSA: <select name="dsa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+			</select>
+		Internship: <select name="dsa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+			</select>
+	    Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+  			</select>
+  		<input name="collaborator" type="text" placeholder="Collaborator">
+  		<input name="collab_code" type="text" placeholder="Collaborator Code">
+  		<input name="collab_amount" type="number" step="0.01" placeholder="Collab Amount">
+  		<textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="studentUpdate" name="update" type="submit">Update</button>
+	</form>
+
+	<form id="studentFormAdd" name="studentForm" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="first_name" type="text" placeholder="First Name"> 
+	    <input name="surname" type="text" placeholder="Surname">
+	    <input name="student_id" type="text" placeholder="Student ID">
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+		<input name="fte" type="text" placeholder="FTE">
+		<input name="form_s" type="text" placeholder="Form S">
+	    <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
+	    <input name="stipend" type="number" step="0.01" placeholder="Stipend">
+	    <input name="FEE" type="number" step="0.01" placeholder="FEE">
+		<input name="other" type="number" step="0.01" placeholder="Other">
+		OFA: <select name="ofa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+  			</select>
+		DSA: <select name="dsa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+			</select>
+		Internship: <select name="dsa">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+			</select>
+	    Jes: <select name="jes">
+		  		<option value="y">Yes</option>
+		  		<option value="n">No</option>
+		  		<option value="n/a">N/A</option>
+  			</select>
+  		<input name="collaborator" type="text" placeholder="Collaborator">
+  		<input name="collab_code" type="text" placeholder="Collaborator Code">
+  		<input name="collab_amount" type="number" step="0.01" placeholder="Collab Amount">
+  		<textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="studentAdd" name="add" type="submit">Add</button>
+	</form>
+	
+
+	<!-- <form id="collaborationForm" name="collaborationForm" method="post" enctype="multipart/form-data">
 	    <input name="collaborator" type="text" placeholder="Collaborator Name"> 
 	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
 	    <input name="award_amount" type="number" step="0.01" placeholder="Award amount">
 	    <input name="start_date" type="date" placeholder="Start Date">
 	    <input name="end_date" type="date" placeholder="End Date">
 		<input id="collaborationSubmit" type="submit" value="Submit" name="submit">
+	</form> -->
+	
+		<form id="collaboratorFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="collaborator" type="text" placeholder="Collaborator Name"> 
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="first_name" type="text" placeholder="Student First Name">
+	    <input name="last_name" type="text" placeholder="Student Last Name">
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <button id="collaboratorSearch" name="search" type="submit">Search</button>
+	    <button id="showAllCollaborator" name="showAll" type="submit">Show All</button>
+	</form>
+
+	<form id="collaboratorFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="collaborator" type="text" placeholder="Collaborator Name"> 
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="award_amount" type="number" step="0.01" placeholder="Award amount">
+	    <input name="first_name" type="text" placeholder="Student First Name">
+	    <input name="last_name" type="text" placeholder="Student Last Name">
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <input name="supervisor" type="text" placeholder="Supervisor">
+	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="collaboratorAdd" name="add" type="submit">Add</button>
+	</form>
+
+	<form id="collaboratorFormUpdate" method="post" enctype="multipart/form-data" style="display: none;">
+	    <input name="collaborator" type="text" placeholder="Collaborator Name"> 
+	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="award_amount" type="number" step="0.01" placeholder="Award amount">
+	    <input name="first_name" type="text" placeholder="Student First Name">
+	    <input name="last_name" type="text" placeholder="Student Last Name">
+	    <input name="start_date" type="date" placeholder="Start Date">
+	    <input name="end_date" type="date" placeholder="End Date">
+	    <input name="supervisor" type="text" placeholder="Supervisor">
+	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
+	    <button id="collaboratorUpdate" name="update" type="submit">Update</button>
 	</form>
 </body>
+
+	<div id="resultTable"></div>
+	
+	<br>
+	
+	<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-6">
+					<table class="table table-hover">
+						<tbody id="tableLeft">
+						</tbody>
+					</table>
+				</div>
+				<div class="col-md-6">
+					<table class="table table-hover">
+						<tbody id="tableRight">
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<dl class="dl-horizontal">
+				<dt>
+					Description lists
+				</dt>
+				<dd>
+					A description list is perfect for defining terms.
+				</dd>
+			</dl>
+		</div>
+	</div>
+</div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+	
 
 </html>
