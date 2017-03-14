@@ -282,7 +282,7 @@
 		    },
 		    body: jsonObj })
 		    .then(res => res.json())
-		    .then(res => console.log(res))
+		    .then(res => renderResults(res))
 		    // .then (res => renderResults(res))
 		    //it is still catching an error?
 		    // .then(res => console.log(res))
@@ -311,7 +311,15 @@
 			col1.innerHTML = key;
 			col2.innerHTML = jsonObj[key];
 		}
-		var rows = tableLeft.rows;
+		var leftRows = tableLeft.rows;
+		var rightRows = tableRight.rows;
+		createResultLinks(leftRows);
+		createResultLinks(rightRows);
+		
+	};
+	
+	function createResultLinks(rows) {
+		console.log("current type is " + queryType);
 		for (var i = 0; i < rows.length; i++) {
 			//award -> allocation
 			if (queryType == 1 && (rows[i].cells[0].innerHTML == "finance_award_no"
@@ -319,48 +327,57 @@
 				var obj = {};
 				obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 				var jsonObj = JSON.stringify(obj);
+				console.log("adding allocation click");
 				createAllocationClick(rows[i], jsonObj);
 			}
 			//award or allocation -> student
-			else if (queryType != 3 && rows[i].cells[0].innerHTML == "my_finance_code") {
+			if (queryType != 3 && rows[i].cells[0].innerHTML == "my_finance_code") {
 				var obj = {};
 				obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 				var jsonObj = JSON.stringify(obj);
+				console.log("adding student click");
 				createStudentClick(rows[i], jsonObj);
 			}
 			//allocation -> award
-			else if (queryType == 2 && rows[i].cells[0].innerHTML == "finance_award_no") {
+			if (queryType == 2 && (rows[i].cells[0].innerHTML == "finance_award_no"
+			|| rows[i].cells[0].innerHTML == "funding_body_ref")) {
 				var obj = {};
 				obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 				var jsonObj = JSON.stringify(obj);
+				console.log("adding award click");
 				createAwardClick(rows[i], jsonObj);
 			}
 			//student -> allocation
-			else if (queryType == 3 && rows[i].cells[0].innerHTML == "my_finance_code") {
+			if (queryType == 3 && rows[i].cells[0].innerHTML == "my_finance_code") {
 				var obj = {};
 				obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 				var jsonObj = JSON.stringify(obj);
+				console.log("adding allocation click");
 				createAllocationClick(rows[i], jsonObj);
 			} 
-		}
-		
-		
+		}	
 	};
 	
 		
 	function createAwardClick(row, jsonObj) {
-		row.onclick = awardLinkQuery(jsonObj);
+		row.onclick = function () { 
+			awardLinkQuery(jsonObj);
+		};
 		//function to call a get request/search endpoint, and if successful clear forms, then render results}
 	};
 	
 	function createAllocationClick(row, jsonObj) {
 		//function to call a get request/search endpoint, and if successful clear forms, then render results}
-		row.onclick = allocationLinkQuery(jsonObj);
+		row.onclick = function () {
+			allocationLinkQuery(jsonObj);
+		};
 	}
 	
 	function createStudentClick(row, jsonObj) {
 		//function to call a get request/search endpoint, and if successful clear forms, then render results}
-		row.onclick = studentLinkQuery(jsonObj);
+		row.onclick = function () {
+			studentLinkQuery(jsonObj);
+		};
 	}
 	
 	function awardLinkQuery(jsonObj) {
@@ -374,6 +391,7 @@
 		    },
 		    body: jsonObj })
 		    .then(res => res.json())
+		    //change query type here within a function/kind of like try/catching
 		    .then (res => renderResults(res))
 		    //it is still catching an error?
 		    // .then(res => console.log(res))
@@ -389,7 +407,7 @@
 		console.log("queryType was " + queryType.toString());
 		queryType = 2;
 		console.log("searching for allocationLink with " + jsonObj);
-		fetch('/get_allocation', {
+		fetch('/get_project', {
 		    method:'POST',
 		    headers: {
 		      'Content-Type': 'application/json',
