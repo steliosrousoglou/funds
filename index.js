@@ -9,7 +9,7 @@ const db_name = 'funds';
 /* Database Table Names */
 // Award table
 const tb_award = 'award_dev';
-const tb_partners = 'partners_dev';
+const tb_collaborators = 'collaborators_dev';
 const tb_projects = 'projects_dev';
 
 /* Create Database Connection Object*/
@@ -121,8 +121,8 @@ const getProject = post => new Promise((resolve, reject) => {
 /**
  * Updates info of specified award
  * 'post' object contains any number of valid fields in
- *      the awards table with its corresponding new values.
- * 'which' object contains identifying info of award to be modified
+ *      the awards table with their corresponding new values.
+ * 'which' object contains identifying info of the award to be modified
  *      (can be any unique field of award)
  * e.g. to change the name of award with funding_body_ref 12345:
  *      updateAward({Name: "new name"}, {funding_body_ref: 12345})
