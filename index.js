@@ -235,7 +235,7 @@ const updateAward = (post, which) => new Promise((resolve, reject) => {
 });
 
 const getAllAwards = () => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_award;
+    const query = 'SELECT * FROM ' + tb_awards;
     connection.query(query, function(err, results) {
         if (!err) {
             console.log(results);
@@ -256,7 +256,7 @@ const getAllAwards = () => new Promise((resolve, reject) => {
  * @return {Array} sum
  */
 const getAllProjects = (post) => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_projects + ' WHERE ?';
+    const query = 'SELECT * FROM ' + tb_allocations + ' WHERE ?';
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
