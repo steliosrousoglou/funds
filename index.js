@@ -296,6 +296,71 @@ const updateStudent = jsonArray => new Promise((resolve, reject) => {
 });
 
 /*
+ * Remove Functions
+ */
+ 
+ /**
+ * Removes matches from allocation table
+ * @param {JSON} post
+ */
+const removeAllocation = post => new Promise((resolve, reject) => {
+    const query = 'DELETE * FROM ' + tb_allocations + ' WHERE ' + formatANDs(post);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            resolve();
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+
+ /**
+ * Removes matches from awards table
+ * @param {JSON} post
+ */
+const removeAward = post => new Promise((resolve, reject) => {
+    const query = 'DELETE * FROM ' + tb_awards + ' WHERE ' + formatANDs(post);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            resolve();
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+ /**
+ * Removes matches from collaborators table
+ * @param {JSON} post
+ */
+const removeCollaborator = post => new Promise((resolve, reject) => {
+    const query = 'DELETE * FROM ' + tb_collaborators + ' WHERE ' + formatANDs(post);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            resolve();
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+ /**
+ * Removes matches from students table
+ * @param {JSON} post
+ */
+const removeStudent = post => new Promise((resolve, reject) => {
+    const query = 'DELETE * FROM ' + tb_students + ' WHERE ' + formatANDs(post);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            resolve();
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+/*
  * Get-All Functions
  */
 
@@ -492,6 +557,45 @@ app.post('/update_student', (req, res) => {
   });
 });
 
+/*
+ * Remove endpoints
+ */
+ 
+app.post('/remove_allocation', (req, res) => {
+  removeAllocation(req.body)
+  .then(() => res.send('success'))
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
+});
+
+app.post('/remove_award', (req, res) => {
+  removeAward(callUpdate(req.body))
+  .then(() => res.send('success'))
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
+});
+
+app.post('/remove_collaborator', (req, res) => {
+  removeCollaborator(req.body)
+  .then(() => res.send('success'))
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
+});
+
+app.post('/remove_student', (req, res) => {
+  removeStudent(callUpdate(req.json))
+  .then(() => res.send('success'))
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
+});
 
 /*
  * Get-All endpoints
