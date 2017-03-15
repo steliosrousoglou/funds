@@ -46,7 +46,8 @@ connection.connect(function(err) {
         console.log("Connected to database.");
         //getAward({finance_award_no: '*'});
         //addAward("AHRC", "GRant2", "sdfasfccgdfg", 98765, "2016-05-05", "2020-05-05", 176543.76, "AS", "Aug-Oct 2018");
-        // updateAward({end_date: "2020-03-31"},{funding_body_reference: 'AH/L503873/1'});
+//         updateAward({ award_name: 'i dont even know' },
+//   { funding_body_reference: 'comeon' });
         //getAward({finance_award_no: 98765});
         //addProject()
         //addAward({Body: "EPSRC", Name: "GRant1", funding_body_ref: "ABCBA", finance_award_no: 12309, start_date: "2018-05-05", end_date: "2022-05-05", amount: 333333, status: "KP", fes_due: "Sep-Nov 2020"});
@@ -70,6 +71,19 @@ const formatANDs = post => {
     var st = '';
     for(var x in post)
         st += '\`' + x + (isNaN(post[x]) ? '\`= \'' + post[x] + '\' AND ' : '\`= ' + post[x] + ' AND ');
+    return st.slice(0, -4);
+}
+
+/*
+ * Takes in JSON object, returns a formatted string
+ * of AND - LIKE statements (for pattern matching in SQL)
+ * @param {json} post
+ * @return {string} st 
+ */
+const formatLIKEs = post => {
+    var st = '';
+    for(var x in post)
+        st += '\`' + x + (isNaN(post[x]) ? '\`LIKE \'%' + post[x] + '%\' AND ' : '\`= ' + post[x] + ' AND ');
     return st.slice(0, -4);
 }
 
@@ -148,7 +162,8 @@ const addStudent = (post) => new Promise ((resolve, reject) => {
  * @return {Array} rows
  */
 const getAward = post => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_awards + ' WHERE ' + formatANDs(post);
+    const query = 'SELECT * FROM ' + tb_awards + ' WHERE ' + formatLIKEs(post);
+    console.log(query);
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
@@ -165,7 +180,7 @@ const getAward = post => new Promise((resolve, reject) => {
  * @return {Array} rows
  */
 const getAllocation = post => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_allocations + ' WHERE ' + formatANDs(post);
+    const query = 'SELECT * FROM ' + tb_allocations + ' WHERE ' + formatLIKEs(post);
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
@@ -182,7 +197,7 @@ const getAllocation = post => new Promise((resolve, reject) => {
  * @return {Array} rows
  */
 const getCollaborator = post => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_collaborators + ' WHERE ' + formatANDs(post);
+    const query = 'SELECT * FROM ' + tb_collaborators + ' WHERE ' + formatLIKEs(post);
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
@@ -199,7 +214,7 @@ const getCollaborator = post => new Promise((resolve, reject) => {
  * @return {Array} rows
  */
 const getStudent = post => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_students + ' WHERE ' + formatANDs(post);
+    const query = 'SELECT * FROM ' + tb_students + ' WHERE ' + formatLIKEs(post);
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
@@ -221,11 +236,10 @@ const getStudent = post => new Promise((resolve, reject) => {
  * @param {JSON} post
  * @param {JSON} which
  */
-const updateAward = (post, which) => new Promise((resolve, reject) => {
-    const query = 'UPDATE ' + tb_awards + ' SET ? WHERE ' + formatANDs(which);
-    connection.query(query, post, function(err, rows) {
+const updateAward = jsonArray => new Promise((resolve, reject) => {
+    const query = 'UPDATE ' + tb_awards + ' SET ? WHERE ' + formatANDs(jsonArray[1]);
+    connection.query(query, jsonArray[0], function(err, res, rows) {
         if (!err) {
-            console.log(rows);
             resolve();
         } else {
             console.log(err);
@@ -238,11 +252,10 @@ const updateAward = (post, which) => new Promise((resolve, reject) => {
  * @param {JSON} post
  * @param {JSON} which
  */
-const updateAllocation = (post, which) => new Promise((resolve, reject) => {
-    const query = 'UPDATE ' + tb_allocations + ' SET ? WHERE ' + formatANDs(which);
-    connection.query(query, post, function(err, rows) {
+const updateAllocation = jsonArray => new Promise((resolve, reject) => {
+    const query = 'UPDATE ' + tb_allocations + ' SET ? WHERE ' + formatANDs(jsonArray[1]);
+    connection.query(query, jsonArray[0], function(err, res, rows) {
         if (!err) {
-            console.log(rows);
             resolve();
         } else {
             console.log(err);
@@ -255,11 +268,10 @@ const updateAllocation = (post, which) => new Promise((resolve, reject) => {
  * @param {JSON} post
  * @param {JSON} which
  */
-const updateCollaborator = (post, which) => new Promise((resolve, reject) => {
-    const query = 'UPDATE ' + tb_collaborators + ' SET ? WHERE ' + formatANDs(which);
-    connection.query(query, post, function(err, rows) {
+const updateCollaborator = jsonArray => new Promise((resolve, reject) => {
+    const query = 'UPDATE ' + tb_collaborators + ' SET ? WHERE ' + formatANDs(jsonArray[1]);
+    connection.query(query, jsonArray[0], function(err, res, rows) {
         if (!err) {
-            console.log(rows);
             resolve();
         } else {
             console.log(err);
@@ -272,11 +284,10 @@ const updateCollaborator = (post, which) => new Promise((resolve, reject) => {
  * @param {JSON} post
  * @param {JSON} which
  */
-const updateStudent = (post, which) => new Promise((resolve, reject) => {
-    const query = 'UPDATE ' + tb_students + ' SET ? WHERE ' + formatANDs(which);
-    connection.query(query, post, function(err, results) {
+const updateStudent = jsonArray => new Promise((resolve, reject) => {
+    const query = 'UPDATE ' + tb_students + ' SET ? WHERE ' + formatANDs(jsonArray[1]);
+    connection.query(query, jsonArray[0], function(err, res, results) {
         if (!err) {
-            console.log(results);
             resolve();
         } else {
             console.log(err);
@@ -447,46 +458,39 @@ app.post('/get_student', (req, res) => {
 
 app.post('/update_allocation', (req, res) => {
   updateAllocation(req.body)
-  .then(res => JSON.stringify(res))
-  .then(s => res.send(s))
+  .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
-      res.send('fail');
+      res.send('fail')
   });
 });
 
 app.post('/update_award', (req, res) => {
   updateAward(callUpdate(req.body))
-  .then(res => JSON.stringify(res))
-  .then(s => res.send(s))
+  .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
-      res.send('fail');
-  })
+      res.send('fail')
+  });
 });
 
 app.post('/update_collaborator', (req, res) => {
   updateCollaborator(req.body)
-  .then(res => JSON.stringify(res))
-  .then(s => res.send(s))
+  .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
-      res.send('fail');
+      res.send('fail')
   });
 });
 
 app.post('/update_student', (req, res) => {
-  updateStudent(callUpdate(req.body))
-  .then(res => JSON.stringify(res))
-  .then(s => res.send(s))
+  updateStudent(callUpdate(req.json))
+  .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
-      res.send('fail');
+      res.send('fail')
   });
 });
-
-
-
 
 
 /*
@@ -539,26 +543,27 @@ app.post('/get_all_collaborators', (req,res) => {
      console.log("updating call");
      console.log(typeof(json));
      console.log(json);
-     var jsonObj = json;
      var params = {};
      var updates = {};
      var split = false;
-     for (var key in jsonObj) {
-         if (jsonObj[key] == '' || jsonObj[key] == null) continue;
+     for (var key in json) {
+         if (json[key] == null || json[key] == '') continue;
          else if (split) {
-             updates[key] = jsonObj[key];
+             updates[key] = json[key];
          }
          else if (key == "split"){
              split = true;
          }
          else {
-             params[key] = jsonObj[key];
+             params[key] = json[key];
          }
      }
+     console.log(params);
+     console.log(updates);
      var jsonParams = JSON.stringify(params);
      var jsonUpdates = JSON.stringify(updates);
-     console.log("params " + typeof(jsonParams));
-     console.log("updates " + typeof(jsonUpdates));
+     console.log("params " + jsonParams);
+     console.log("updates " + jsonUpdates);
      return [updates, params];
  }
  

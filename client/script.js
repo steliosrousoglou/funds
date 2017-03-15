@@ -14,6 +14,7 @@
   		document.getElementById("collaboratorFormSearch").style.display="none";
   		document.getElementById("collaboratorFormUpdate").style.display="none";
   		document.getElementById("collaboratorFormAdd").style.display="none";
+  		document.getElementById("descriptionList").style.display="none";
   		document.getElementById("resultTable").innerHTML="";
   		document.getElementById("tableLeft").innerHTML = "";
   		document.getElementById("tableRight").innerHTML = "";
@@ -52,6 +53,12 @@
   		var collaboratorFormSearch = document.getElementById("collaboratorSearch");
   		var collaboratorFormAdd = document.getElementById("collaboratorAdd");
   		var collaboratorShowAll = document.getElementById("showAllCollaborator");
+  		
+  		var awardFormCancel = document.getElementById("awardCancel");
+  		var awardFormUpdate = document.getElementById("awardUpdate");
+  		
+  		awardFormCancel.addEventListener("click", updatePreventSubmit, false);
+  		awardFormUpdate.addEventListener("click", updatePreventSubmit, false);
 
   		awardFormSearch.addEventListener("click", awardFormReq, false);
   		awardFormSearch.req = 0;
@@ -82,7 +89,11 @@
   		collaboratorShowAll.req = 2;
 	}
 	
-	
+	//cancel prevent default
+	function updatePreventSubmit(evt) {
+		evt.preventDefault();
+	}
+		
 	//For Award search, provide a show all awards list, with hyperlinks that bring up a specific award view
 	function studentFormReq (evt) {
 		evt.preventDefault();
@@ -133,7 +144,10 @@
 				.then(text => {
 					 if (text === 'fail') alert('Failed to add student');
 					 //add function to maybe refresh the page echoing "succesful add"
-					 else if (text === 'success') console.log("Student Successfully Added");
+					 else if (text === 'success') {
+					 	alert ("Student Successfully Added");
+					 	clearAllForms();
+					 }
 					})
 			  .catch((e) => console.log(e));
 	    }
@@ -202,7 +216,10 @@
 				.then(text => {
 					 if (text === 'fail') alert('Failed to add allocation');
 					 //add function to maybe refresh the page echoing "succesful add"
-					 else if (text === 'success') console.log("Allocation Successfully Added");
+					 else if (text === 'success') {
+					 	alert ("Allocation Successfully Added");
+					 	clearAllForms();
+					 }
 					})
 			  .catch((e) => console.log(e));
 	    }
@@ -271,7 +288,10 @@
 				.then(text => {
 					 if (text === 'fail') alert('Failed to add collaborator');
 					 //add function to maybe refresh the page echoing "succesful add"
-					 else if (text === 'success') console.log("Collaborator Successfully Added");
+					 else if (text === 'success') {
+					 	alert ("Collaborator Successfully Added");
+					 	clearAllForms();
+					 }
 					})
 			  .catch((e) => console.log(e));
 	    }
@@ -338,7 +358,10 @@
 				.then(text => {
 					 if (text === 'fail') alert('Failed to add award');
 					 //add function to maybe refresh the page echoing "succesful add"
-					 else if (text === 'success') console.log("Award Successfully Added");
+					 else if (text === 'success') {
+					 	alert ("Award Successfully Added");
+					 	clearAllForms();
+					 }
 					})
 			  .catch((e) => console.log(e));
 	    }
@@ -383,13 +406,14 @@
 	};
 	
 	function createUpdateClick(row, json) {
-		row.onclick = function () {
-			updateRender(json);
+		row.onclick = function (event) {
+			updateRender(json, event);
 		};
 	}
 	
-	function updateRender(json) {
+	function updateRender(json, event) {
 		//store it to set after form clear
+		event.preventDefault();
 		var qT = queryType;
 		var tableLeft = document.getElementById("tableLeft");
 	    tableLeft.innerHTML = "";
@@ -426,19 +450,30 @@
 			updateReq(json, updateForm);
 		};
 		document.getElementById(cancelButton).onclick = function () {
+			document.getElementById(updateForm).reset();
+			document.getElementById(updateForm).style.display = 'none';
 			detailedResult(json);
 		};
 	}
 	
 	function updateReq(params, updateForm) {
-		console.log(params);
-		var jsonParams = JSON.parse(params);
+		console.log("params are " + params);
+		// var jsonParams = JSON.parse(params);
 		var obj = {};
+		var jsonParams = JSON.parse(params);
+		for (var key in jsonParams) {
+			if (jsonParams[key] == null || jsonParams[key].length < 1) {
+	        	console.log("HERE");
+	        }
+	        else {
+	        	obj[key] = jsonParams[key];
+	        }
+		}
 		var endpoint = '';
 		switch (queryType) {
 			case (1):
 				endpoint = '/update_award';
-				obj["myfinance_award_number"] = jsonParams["myfinance_award_number"];
+				// obj["myfinance_award_number"] = jsonParams["myfinance_award_number"];
 				break;
 			case (2):
 				endpoint = '/update_project';
@@ -457,7 +492,7 @@
 		for(var i = 0 ; i < formInputs.length ;i++) {
 	        var item = formInputs.item(i);
 	        // to weed out empty form inputs
-	        if (item.value.length <= 1) {
+	        if (item.value.length < 1 || item.value == null) {
 	        	console.log("HERE");
 	        }
 	        else {
@@ -470,15 +505,21 @@
 	    console.log(endpoint);
 	    console.log(jsonObj);
 	    fetch(endpoint, {
-		    method:'GET',
+		    method:'POST',
 		    headers: {
 		      'Content-Type': 'application/json',
 		    },
 		    body: jsonObj })
-		    .then(res => console.log(res))
-		    //add success/fail check later
-		    // .then(res => renderResults(res))
-		  .catch((e) => console.log(e));
+		    .then(res => res.text())
+				.then(text => {
+					 if (text === 'fail') alert('Failed to update ' + endpoint);
+					 //add function to maybe refresh the page echoing "succesful add"
+					 else if (text === 'success') {
+					 	alert("Update was succesful");
+					 	clearAllForms();
+					 }
+					})
+		  .catch((e) => console.log());
 	    
 	}
 	
@@ -664,6 +705,7 @@
 		document.getElementById("allocationFormSearch").style.display="none";
 		document.getElementById("studentFormSearch").style.display="none";
 		document.getElementById("collaboratorFormSearch").style.display="none";
+		document.getElementById("descriptionList").style.display="block";
 		console.log("rendering");
 		console.log(jsonObj);
 		if (jsonObj.length == 0) {

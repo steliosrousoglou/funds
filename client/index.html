@@ -91,8 +91,8 @@
 	    <input name="end_date" type="date" placeholder="End Date">
 	    <input name="staff_name" type="text" placeholder="Staff Name">
 	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
-	    <button id="awardUpdate" name="update">Update</button>
-	    <button id="awardCancel" name="cancel">Cancel</button>
+	    <button id="awardUpdate" name="update" type="submit">Update</button>
+	    <button id="awardCancel" name="cancel" type="submit">Cancel</button>
 	</form>
 
 	<form id="awardFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
@@ -437,7 +437,7 @@
 	
 	<br>
 	
-	<div class="container-fluid">
+	<div class="container-fluid" id="descriptionList">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="row">
@@ -456,10 +456,49 @@
 			</div>
 			<dl class="dl-horizontal">
 				<dt>
-					Description lists
+					Search Results
 				</dt>
 				<dd>
-					A description list is perfect for defining terms.
+					Click on a row to show the detailed view.
+				</dd>
+				<dt>
+					Detailed View
+				</dt>
+				<dd>
+					Related quick-search links to the other table views as well as update.
+				</dd>
+				<dt>
+					From Award:
+				</dt>
+				<dd>
+					-> Allocation (myfinance_award_number and funding_body_reference)
+				</dd>
+				<dd>
+					-> Student (myfinance_code)
+				</dd>
+				<dt>
+					From Allocation:
+				</dt>
+				<dd>
+					-> Award (myfinance_award_number)
+				</dd>
+				<dd>
+					-> Student (myfinance_code)
+				</dd>
+				<dt>
+					From Student:
+				</dt>
+				<dd>
+					-> Allocation (myfinance_code)
+				</dd>
+				<dd>
+					-> Collaborator (collaborator_code)
+				</dd>
+				<dt>
+					From Collaborator:
+				</dt>
+				<dd>
+					-> Student (myfinance_code)
 				</dd>
 			</dl>
 		</div>
