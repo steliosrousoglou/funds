@@ -136,6 +136,8 @@ const updateAward = (post, which) => new Promise((resolve, reject) => {
             console.log(results);
             resolve();
         } else {
+            console.log(post);
+            console.log(which);
             console.log(err);
             reject();
     }});
@@ -252,8 +254,40 @@ app.post('/get_all_awards', (req, res) => {
 /*
  * Endpoint to update award
  */
+ function callUpdate (json) {
+     console.log("updating call");
+     console.log(typeof(json));
+     console.log(json);
+     var jsonObj = json;
+     var params = {};
+     var updates = {};
+     var split = false;
+     for (var key in jsonObj) {
+         if (jsonObj[key] == '' || jsonObj[key] == null) continue;
+         else if (split) {
+             updates[key] = jsonObj[key];
+         }
+         else if (key == "split"){
+             split = true;
+         }
+         else {
+             params[key] = jsonObj[key];
+         }
+     }
+     var jsonParams = JSON.stringify(params);
+     var jsonUpdates = JSON.stringify(updates);
+     console.log("params " + typeof(jsonParams));
+     console.log("updates " + typeof(jsonUpdates));
+     return updateAward(updates, params);
+ }
+ 
 app.post('/update_award', (req, res) => {
-  updateAward(req.body.post, req.body.which)
+    console.log("reached this endpoint");
+    // console.log("req body is" + req.body+ "at line 237");
+    // console.log("req is " + req)
+    // console.log(JSON.parse(req.body));
+//   updateAward(JSON.parse(req.body)["updates"], JSON.parse(req.body)["params"])
+    callUpdate(req.body)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
