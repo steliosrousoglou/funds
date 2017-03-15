@@ -10,7 +10,7 @@ const db_name = 'funds';
 // Award table
 
 const tb_allocations = 'allocations_dev';
-const tb_awards = 'award_dev';
+const tb_awards = 'awards_dev';
 const tb_collaborators = 'collaborators_dev';
 const tb_students = 'students_dev';
 
@@ -255,9 +255,9 @@ const getAllAwards = () => new Promise((resolve, reject) => {
  * @param {JSON} post
  * @return {Array} sum
  */
-const getAllProjects = (post) => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_allocations + ' WHERE ?';
-    connection.query(query, post, function(err, rows) {
+const getAllProjects = () => new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM ' + tb_allocations;
+    connection.query(query, function(err, rows) {
         if (!err) {
             console.log(rows);
             resolve(rows);
