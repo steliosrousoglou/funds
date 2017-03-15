@@ -17,12 +17,18 @@
   		document.getElementById("resultTable").innerHTML="";
   		document.getElementById("tableLeft").innerHTML = "";
   		document.getElementById("tableRight").innerHTML = "";
+  		document.getElementById("awardFormSearch").reset();
   		document.getElementById("awardFormUpdate").reset();
   		document.getElementById("awardFormAdd").reset();
+  		document.getElementById("allocationFormSearch").reset();
   		document.getElementById("allocationFormUpdate").reset();
   		document.getElementById("allocationFormAdd").reset();
+  		document.getElementById("studentFormSearch").reset();
   		document.getElementById("studentFormUpdate").reset();
   		document.getElementById("studentFormAdd").reset();
+  		document.getElementById("collaboratorFormSearch").reset();
+  		document.getElementById("collaboratorFormUpdate").reset();
+  		document.getElementById("collaboratorFormAdd").reset();
   		queryType = 0;
   		
 	}
@@ -36,53 +42,44 @@
   	    var awardShowAll = document.getElementById("showAllAward");
 
   	    var allocationFormSearch = document.getElementById("allocationSearch");
-  	    var allocationFormUpdate = document.getElementById("allocationUpdate");
   	    var allocationFormAdd = document.getElementById("allocationAdd");
   	    var allocationShowAll = document.getElementById("showAllAllocation");
 
   		var studentFormSearch = document.getElementById("studentSearch");
-  		var studentFormUpdate = document.getElementById("studentUpdate");
   		var studentFormAdd = document.getElementById("studentAdd");
   		var studentShowAll = document.getElementById("showAllStudent");
 
   		var collaboratorFormSearch = document.getElementById("collaboratorSearch");
-  		var collaboratorFormUpdate = document.getElementById("collaboratorUpdate");
   		var collaboratorFormAdd = document.getElementById("collaboratorAdd");
   		var collaboratorShowAll = document.getElementById("showAllCollaborator");
 
   		awardFormSearch.addEventListener("click", awardFormReq, false);
   		awardFormSearch.req = 0;
   		awardFormAdd.addEventListener("click", awardFormReq, false);
-  		awardFormAdd.req = 2;
+  		awardFormAdd.req = 1;
   		awardShowAll.addEventListener("click", awardFormReq, false);
-  		awardShowAll.req = 3;
+  		awardShowAll.req = 2;
 
   		allocationFormSearch.addEventListener("click", allocationFormReq, false);
   		allocationFormSearch.req = 0;
-  		allocationFormUpdate.addEventListener("click", allocationFormReq, false);
-  		allocationFormUpdate.req = 1;
   		allocationFormAdd.addEventListener("click", allocationFormReq, false);
-  		allocationFormAdd.req = 2;
+  		allocationFormAdd.req = 1;
   		allocationShowAll.addEventListener("click", allocationFormReq, false);
-  		allocationShowAll.req = 3;
+  		allocationShowAll.req = 2;
 
   		studentFormSearch.addEventListener("click", studentFormReq, false);
   		studentFormSearch.req = 0;
-  		studentFormUpdate.addEventListener("click", studentFormReq, false);
-  		studentFormUpdate.req = 1;
   		studentFormAdd.addEventListener("click", studentFormReq, false);
-  		studentFormAdd.req = 2;
+  		studentFormAdd.req = 1;
   		studentShowAll.addEventListener("click", studentFormReq, false);
-  		studentShowAll.req = 3;
+  		studentShowAll.req = 2;
 
   		collaboratorFormSearch.addEventListener("click", collaboratorFormReq, false);
   		collaboratorFormSearch.req = 0;
-  		collaboratorFormUpdate.addEventListener("click", collaboratorFormReq, false);
-  		collaboratorFormUpdate.req = 1;
   		collaboratorFormAdd.addEventListener("click", collaboratorFormReq, false);
-  		collaboratorFormAdd.req = 2;
+  		collaboratorFormAdd.req = 1;
   		collaboratorShowAll.addEventListener("click", collaboratorFormReq, false);
-  		collaboratorShowAll.req = 3;
+  		collaboratorShowAll.req = 2;
 	}
 	
 	
@@ -98,14 +95,10 @@
 				endpoint = '/get_student';
 				break;
 			case 1:
-				formInputs = document.getElementById("studentFormUpdate").elements;
-				endpoint = '/update_student';
-				break;
-			case 2:
 				formInputs = document.getElementById("studentFormAdd").elements;
 				endpoint = '/add_student';
 				break;
-			case 3:
+			case 2:
 				formInputs = document.getElementById("studentFormSearch").elements;
 				endpoint = '/get_all_students';
 				break;
@@ -129,15 +122,32 @@
 	    var jsonObj = JSON.stringify(obj);
 	    //try catch here maybe?
 	    console.log(jsonObj);
-	    fetch(endpoint, {
-		    method:'POST',
-		    headers: {
-		      'Content-Type': 'application/json',
-		    },
-		    body: jsonObj })
-		    .then(res => res.json())
-		    .then (res => renderResults(res))
-		  .catch((e) => console.log(e));
+	    if (evt.target.req == 1) {
+	    	fetch(endpoint, {
+			    method:'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: jsonObj })
+			    .then(res => res.text())
+				.then(text => {
+					 if (text === 'fail') alert('Failed to add student');
+					 //add function to maybe refresh the page echoing "succesful add"
+					 else if (text === 'success') console.log("Student Successfully Added");
+					})
+			  .catch((e) => console.log(e));
+	    }
+	    else {
+	    	fetch(endpoint, {
+			    method:'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: jsonObj })
+			    .then(res => res.json())
+			    .then(res => renderResults(res))
+			  .catch((e) => console.log(e));
+	    }
 	};
 
 	
@@ -152,14 +162,10 @@
 				endpoint = '/get_allocation';
 				break;
 			case 1:
-				formInputs = document.getElementById("allocationFormUpdate").elements;
-				endpoint = '/update_allocation';
-				break;
-			case 2:
 				formInputs = document.getElementById("allocationFormAdd").elements;
 				endpoint = '/add_allocation';
 				break;
-			case 3:
+			case 2:
 				formInputs = document.getElementById("allocationFormSearch").elements;
 				endpoint = '/get_all_allocations';
 				break;
@@ -185,15 +191,32 @@
 	    console.log(jsonObj);
 	    // var body = evt.target.dbReq == 2? "" : body;
 	    console.log(endpoint);
-	    fetch(endpoint, {
-		    method:'POST',
-		    headers: {
-		      'Content-Type': 'application/json',
-		    },
-		    body: jsonObj })
-		    .then(res => res.json())
-		    .then (res => renderResults(res))
-		  .catch((e) => console.log(e));
+	    if (evt.target.req == 1) {
+	    	fetch(endpoint, {
+			    method:'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: jsonObj })
+			    .then(res => res.text())
+				.then(text => {
+					 if (text === 'fail') alert('Failed to add allocation');
+					 //add function to maybe refresh the page echoing "succesful add"
+					 else if (text === 'success') console.log("Allocation Successfully Added");
+					})
+			  .catch((e) => console.log(e));
+	    }
+	    else {
+	    	fetch(endpoint, {
+			    method:'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: jsonObj })
+			    .then(res => res.json())
+			    .then(res => renderResults(res))
+			  .catch((e) => console.log(e));
+	    }
 		
 	};
 	
@@ -208,14 +231,10 @@
 				endpoint = '/get_collaborator';
 				break;
 			case 1:
-				formInputs = document.getElementById("collaboratorFormUpdate").elements;
-				endpoint = '/update_collaborator';
-				break;
-			case 2:
 				formInputs = document.getElementById("collaboratorFormAdd").elements;
 				endpoint = '/add_collaborator';
 				break;
-			case 3:
+			case 2:
 				formInputs = document.getElementById("collaboratorFormSearch").elements;
 				endpoint = '/get_all_collaborators';
 				break;
@@ -241,15 +260,32 @@
 	    console.log(jsonObj);
 	    // var body = evt.target.dbReq == 2? "" : body;
 	    console.log(endpoint);
-	    fetch(endpoint, {
-		    method:'POST',
-		    headers: {
-		      'Content-Type': 'application/json',
-		    },
-		    body: jsonObj })
-		    .then(res => res.json())
-		    .then (res => renderResults(res))
-		  .catch((e) => console.log(e));
+	    if (evt.target.req == 1) {
+	    	fetch(endpoint, {
+			    method:'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: jsonObj })
+			    .then(res => res.text())
+				.then(text => {
+					 if (text === 'fail') alert('Failed to add collaborator');
+					 //add function to maybe refresh the page echoing "succesful add"
+					 else if (text === 'success') console.log("Collaborator Successfully Added");
+					})
+			  .catch((e) => console.log(e));
+	    }
+	    else {
+	    	fetch(endpoint, {
+			    method:'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: jsonObj })
+			    .then(res => res.json())
+			    .then(res => renderResults(res))
+			  .catch((e) => console.log(e));
+	    }
 	};
 
 	function awardFormReq (evt) {
@@ -263,14 +299,10 @@
 				endpoint = '/get_award';
 				break;
 			case 1:
-				formInputs = document.getElementById("awardFormUpdate").elements;
-				endpoint = '/update_award';
-				break;
-			case 2:
 				formInputs = document.getElementById("awardFormAdd").elements;
 				endpoint = '/add_award';
 				break;
-			case 3:
+			case 2:
 				formInputs = document.getElementById("awardFormSearch").elements;
 				endpoint = '/get_all_awards';
 				break;
@@ -294,15 +326,33 @@
 	    var jsonObj = JSON.stringify(obj);
 	    //try catch here maybe?
 	    console.log(jsonObj);
-	    fetch(endpoint, {
-		    method:'POST',
-		    headers: {
-		      'Content-Type': 'application/json',
-		    },
-		    body: jsonObj })
-		    .then(res => res.json())
-		    .then(res => renderResults(res))
-		  .catch((e) => console.log(e));
+	    //this is add, special request
+	    if (evt.target.req == 1) {
+	    	fetch(endpoint, {
+			    method:'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: jsonObj })
+			    .then(res => res.text())
+				.then(text => {
+					 if (text === 'fail') alert('Failed to add award');
+					 //add function to maybe refresh the page echoing "succesful add"
+					 else if (text === 'success') console.log("Award Successfully Added");
+					})
+			  .catch((e) => console.log(e));
+	    }
+	    else {
+	    	fetch(endpoint, {
+			    method:'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: jsonObj })
+			    .then(res => res.json())
+			    .then(res => renderResults(res))
+			  .catch((e) => console.log(e));
+	    }
 	};
 	
 	function detailedResult (json) {
@@ -436,6 +486,7 @@
 		console.log("current type is " + queryType);
 		for (var i = 0; i < rows.length; i++) {
 			//award -> allocation
+			if (rows[i].cells[1].innerHTML == "" ) continue;
 			if (queryType == 1 && (rows[i].cells[0].innerHTML == "myfinance_award_number"
 			|| rows[i].cells[0].innerHTML == "funding_body_reference")) {
 				var obj = {};
@@ -609,6 +660,10 @@
 	}
 
 	function renderResults(jsonObj) {
+		document.getElementById("awardFormSearch").style.display="none";
+		document.getElementById("allocationFormSearch").style.display="none";
+		document.getElementById("studentFormSearch").style.display="none";
+		document.getElementById("collaboratorFormSearch").style.display="none";
 		console.log("rendering");
 		console.log(jsonObj);
 		if (jsonObj.length == 0) {

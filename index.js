@@ -46,7 +46,7 @@ connection.connect(function(err) {
         console.log("Connected to database.");
         //getAward({finance_award_no: '*'});
         //addAward("AHRC", "GRant2", "sdfasfccgdfg", 98765, "2016-05-05", "2020-05-05", 176543.76, "AS", "Aug-Oct 2018");
-        //updateAward({end_date: "2023-05-03"},{funding_body_ref: 'sdfasfccgdfg'});
+        // updateAward({end_date: "2020-03-31"},{funding_body_reference: 'AH/L503873/1'});
         //getAward({finance_award_no: 98765});
         //addProject()
         //addAward({Body: "EPSRC", Name: "GRant1", funding_body_ref: "ABCBA", finance_award_no: 12309, start_date: "2018-05-05", end_date: "2022-05-05", amount: 333333, status: "KP", fes_due: "Sep-Nov 2020"});
@@ -209,6 +209,7 @@ const getStudent = post => new Promise((resolve, reject) => {
             reject(err);
     }});
 });
+
 /**
  * Updates info of specified award
  * 'post' object contains any number of valid fields in
@@ -221,14 +222,63 @@ const getStudent = post => new Promise((resolve, reject) => {
  * @param {JSON} which
  */
 const updateAward = (post, which) => new Promise((resolve, reject) => {
-    const query = 'UPDATE ' + tb_awards + ' SET ? WHERE ?';
-    connection.query(query, [post, which], function(err, results) {
+    const query = 'UPDATE ' + tb_awards + ' SET ? WHERE ' + formatANDs(which);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            console.log(rows);
+            resolve();
+        } else {
+            console.log(err);
+            reject();
+    }});
+});
+
+/*
+ * Updates allocation entry
+ * @param {JSON} post
+ * @param {JSON} which
+ */
+const updateAllocation = (post, which) => new Promise((resolve, reject) => {
+    const query = 'UPDATE ' + tb_allocations + ' SET ? WHERE ' + formatANDs(which);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            console.log(rows);
+            resolve();
+        } else {
+            console.log(err);
+            reject();
+    }});
+});
+
+/*
+ * Updates collaborator entry
+ * @param {JSON} post
+ * @param {JSON} which
+ */
+const updateCollaborator = (post, which) => new Promise((resolve, reject) => {
+    const query = 'UPDATE ' + tb_collaborators + ' SET ? WHERE ' + formatANDs(which);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            console.log(rows);
+            resolve();
+        } else {
+            console.log(err);
+            reject();
+    }});
+});
+
+/*
+ * Updates student entry
+ * @param {JSON} post
+ * @param {JSON} which
+ */
+const updateStudent = (post, which) => new Promise((resolve, reject) => {
+    const query = 'UPDATE ' + tb_students + ' SET ? WHERE ' + formatANDs(which);
+    connection.query(query, post, function(err, results) {
         if (!err) {
             console.log(results);
             resolve();
         } else {
-            console.log(post);
-            console.log(which);
             console.log(err);
             reject();
     }});
@@ -351,6 +401,16 @@ app.post('/add_student', (req, res) => {
  * Get endpoints
  */
  
+app.post('/get_allocation', (req, res) => {
+  getAllocation(req.body)
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
 app.post('/get_award', (req, res) => {
   getAward(req.body)
   .then(res => JSON.stringify(res))
@@ -361,8 +421,8 @@ app.post('/get_award', (req, res) => {
   })
 });
 
-app.post('/get_allocation', (req, res) => {
-  getAllocation(req.body)
+app.post('/get_collaborator', (req, res) => {
+  getCollaborator(req.body)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -381,8 +441,12 @@ app.post('/get_student', (req, res) => {
   });
 });
 
-app.post('/get_collaborator', (req, res) => {
-  getCollaborator(req.body)
+/*
+ * Update endpoints
+ */
+
+app.post('/update_allocation', (req, res) => {
+  updateAllocation(req.body)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -390,6 +454,38 @@ app.post('/get_collaborator', (req, res) => {
       res.send('fail');
   });
 });
+
+app.post('/update_award', (req, res) => {
+  updateAward(callUpdate(req.body))
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  })
+});
+
+app.post('/update_collaborator', (req, res) => {
+  updateCollaborator(req.body)
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+app.post('/update_student', (req, res) => {
+  updateStudent(callUpdate(req.body))
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+
 
 
 
@@ -463,23 +559,23 @@ app.post('/get_all_collaborators', (req,res) => {
      var jsonUpdates = JSON.stringify(updates);
      console.log("params " + typeof(jsonParams));
      console.log("updates " + typeof(jsonUpdates));
-     return updateAward(updates, params);
+     return [updates, params];
  }
  
-app.post('/update_award', (req, res) => {
-    console.log("reached this endpoint");
-    // console.log("req body is" + req.body+ "at line 237");
-    // console.log("req is " + req)
-    // console.log(JSON.parse(req.body));
-//   updateAward(JSON.parse(req.body)["updates"], JSON.parse(req.body)["params"])
-    callUpdate(req.body)
-  .then(res => JSON.stringify(res))
-  .then(s => res.send(s))
-  .catch(e => {
-      console.log(e);
-      res.send('fail');
-  })
-});
+// app.post('/update_award', (req, res) => {
+//     console.log("reached this endpoint");
+//     // console.log("req body is" + req.body+ "at line 237");
+//     // console.log("req is " + req)
+//     // console.log(JSON.parse(req.body));
+// //   updateAward(JSON.parse(req.body)["updates"], JSON.parse(req.body)["params"])
+//     callUpdate(req.body)
+//   .then(res => JSON.stringify(res))
+//   .then(s => res.send(s))
+//   .catch(e => {
+//       console.log(e);
+//       res.send('fail');
+//   })
+// });
 
 
 app.post('/get_total_funding', (req, res) => {
