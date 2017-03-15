@@ -8,9 +8,11 @@ const db_name = 'funds';
 
 /* Database Table Names */
 // Award table
-const tb_award = 'award_dev';
+
+const tb_allocations = 'allocations_dev';
+const tb_awards = 'award_dev';
 const tb_collaborators = 'collaborators_dev';
-const tb_projects = 'projects_dev';
+const tb_students = 'students_dev';
 
 /* Create Database Connection Object*/
 var connection = mysql.createConnection({
@@ -42,7 +44,6 @@ app.use(function(req, res, next) {
 connection.connect(function(err) {
     if(!err) {
         console.log("Connected to database.");
-        
         //getAward({finance_award_no: '*'});
         //addAward("AHRC", "GRant2", "sdfasfccgdfg", 98765, "2016-05-05", "2020-05-05", 176543.76, "AS", "Aug-Oct 2018");
         //updateAward({end_date: "2023-05-03"},{funding_body_ref: 'sdfasfccgdfg'});
@@ -50,7 +51,7 @@ connection.connect(function(err) {
         //addProject()
         //addAward({Body: "EPSRC", Name: "GRant1", funding_body_ref: "ABCBA", finance_award_no: 12309, start_date: "2018-05-05", end_date: "2022-05-05", amount: 333333, status: "KP", fes_due: "Sep-Nov 2020"});
         //getAllProjects = (post)
-        getTotalFunding();
+        //getTotalFunding();
     } else {
         console.log("Error connecting to database, quitting ... \n\n");
         process.exit(1);
@@ -60,11 +61,11 @@ connection.connect(function(err) {
 /* Main methods */
 
 /**
- * Adds award to award database - funding_body_ref, finance_award_no unique
+ * Adds award to awards database - funding_body_reference, myfinance_award_number unique
  * @param {json} post 
  */
 const addAward = post => new Promise((resolve, reject) => {
-    const query = 'INSERT INTO ' + tb_award + ' SET ?';
+    const query = 'INSERT INTO ' + tb_awards + ' SET ?';
     
     connection.query(query, post, function(err, rows) {
         if (!err) {
@@ -79,15 +80,60 @@ const addAward = post => new Promise((resolve, reject) => {
 });
 
 /**
+ * Adds row to allocations database - unique ID offered by database
+ * @param {JSON} post
+ */
+const addAllocation = (post) => new Promise ((resolve, reject) => {
+    const query = 'INSERT INTO ' + tb_allocations + ' SET ?';
+
+    connection.query(query, post, function(err, rows) {
+        if (!err)
+            console.log('Added Allocation');
+        else
+            console.log(err);
+    });
+});
+
+/**
+ * Adds row to collaborators database - myfinance_code unique
+ * @param {JSON} post
+ */
+const addCollaborator = (post) => new Promise ((resolve, reject) => {
+    const query = 'INSERT INTO ' + tb_collaborators + ' SET ?';
+
+    connection.query(query, post, function(err, rows) {
+        if (!err)
+            console.log('Added Collaborator');
+        else
+            console.log(err);
+    });
+});
+
+/**
+ * Adds row to students database - unique ID offered by database (for student - project combo)
+ * @param {JSON} post
+ */
+const addStudent = (post) => new Promise ((resolve, reject) => {
+    const query = 'INSERT INTO ' + tb_students + ' SET ?';
+
+    connection.query(query, post, function(err, rows) {
+        if (!err)
+            console.log('Added Student');
+        else
+            console.log(err);
+    });
+});
+
+/**
  * Returns awards array with all matches
  * 'post' object contains any *one* valid field in the awards table with
  *      its corresponding value. e.g. to search for award with
- *      funding_body_ref = 12345: getAward({funding_body_ref: 12345})
+ *      funding_body_reference = 12345: getAward({funding_body_reference: 12345})
  * @param {JSON} post
  * @return {Array} rows
  */
 const getAward = post => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_award + ' WHERE ?';
+    const query = 'SELECT * FROM ' + tb_awards + ' WHERE ?';
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
@@ -153,21 +199,6 @@ const getAllAwards = () => new Promise((resolve, reject) => {
             console.log(err);
             reject(err);
     }});
-});
-
-/**
- * Adds row to projects database - student-project combination unique
- * @param {JSON} post
- */
-const addProject = (post) => new Promise ((resolve, reject) => {
-    const query = 'INSERT INTO ' + tb_projects + ' SET ?';
-
-    connection.query(query, post, function(err, rows) {
-        if (!err)
-            console.log('Added Project');
-        else
-            console.log(err);
-    });
 });
 
 /*
