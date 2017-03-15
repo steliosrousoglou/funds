@@ -58,6 +58,21 @@ connection.connect(function(err) {
     }
 });
 
+/* Helper Methods */
+
+/*
+ * Takes in JSON object, returns a formatted
+ * string of AND statements (for SQL search use)
+ * @param {json} post
+ * @return {string} st 
+ */
+const formatANDs = post => {
+    var st = '';
+    for(var x in post)
+        st += '\`' + x + (isNaN(post[x]) ? '\`= \'' + post[x] + '\' AND ' : '\`= ' + post[x] + ' AND ');
+    return st.slice(0, -4);
+}
+
 /* Main methods */
 
 /**
@@ -133,7 +148,7 @@ const addStudent = (post) => new Promise ((resolve, reject) => {
  * @return {Array} rows
  */
 const getAward = post => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_awards + ' WHERE ?';
+    const query = 'SELECT * FROM ' + tb_awards + ' WHERE ' + formatANDs(post);
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
@@ -145,15 +160,12 @@ const getAward = post => new Promise((resolve, reject) => {
 });
 
 /**
- * Returns projects array with all matches
- * 'post' object contains any *one* valid field in the awards table with
- *      its corresponding value. e.g. to search for award with
- *      funding_body_ref = 12345: getAward({funding_body_ref: 12345})
+ * Returns allocations array with all matches
  * @param {JSON} post
  * @return {Array} rows
  */
-const getProject = post => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_projects + ' WHERE ?';
+const getAllocation = post => new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM ' + tb_allocations + ' WHERE ' + formatANDs(post);
     connection.query(query, post, function(err, rows) {
         if (!err) {
             console.log(rows);
@@ -164,6 +176,39 @@ const getProject = post => new Promise((resolve, reject) => {
     }});
 });
 
+/**
+ * Returns collaborators array with all matches
+ * @param {JSON} post
+ * @return {Array} rows
+ */
+const getCollaborator = post => new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM ' + tb_collaborators + ' WHERE ' + formatANDs(post);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            console.log(rows);
+            resolve(rows);
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+/**
+ * Returns students array with all matches
+ * @param {JSON} post
+ * @return {Array} rows
+ */
+const getStudent = post => new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM ' + tb_students + ' WHERE ' + formatANDs(post);
+    connection.query(query, post, function(err, rows) {
+        if (!err) {
+            console.log(rows);
+            resolve(rows);
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
 /**
  * Updates info of specified award
  * 'post' object contains any number of valid fields in
@@ -176,7 +221,7 @@ const getProject = post => new Promise((resolve, reject) => {
  * @param {JSON} which
  */
 const updateAward = (post, which) => new Promise((resolve, reject) => {
-    const query = 'UPDATE ' + tb_award + ' SET ? WHERE ?';
+    const query = 'UPDATE ' + tb_awards + ' SET ? WHERE ?';
     connection.query(query, [post, which], function(err, results) {
         if (!err) {
             console.log(results);
@@ -228,7 +273,7 @@ const getAllProjects = (post) => new Promise((resolve, reject) => {
  *  @return {JSON} totals
  */
 const getTotalFunding = () => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_award;
+    const query = 'SELECT * FROM ' + tb_awards;
     connection.query(query, function(err, rows) {
         if (!err) {
             var dict = {};
@@ -245,7 +290,7 @@ const getTotalFunding = () => new Promise((resolve, reject) => {
 });
 
 /*
- * Endpoint to add award
+ * Add endpoints
  */
 app.post('/add_award', (req, res) => {
   addAward(req.body)
@@ -256,9 +301,37 @@ app.post('/add_award', (req, res) => {
   });
 });
 
+app.post('/add_allocations', (req, res) => {
+  addAllocation(req.body)
+  .then(() => res.send('success'))
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
+});
+
+app.post('/add_collaborators', (req, res) => {
+  addCollaborator(req.body)
+  .then(() => res.send('success'))
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
+});
+
+app.post('/add_students', (req, res) => {
+  addStudent(req.body)
+  .then(() => res.send('success'))
+  .catch(e => {
+      console.log(e);
+      res.send('fail')
+  });
+});
+
 /*
- * Endpoint to get award
+ * Get endpoints
  */
+ 
 app.post('/get_award', (req, res) => {
   getAward(req.body)
   .then(res => JSON.stringify(res))
@@ -268,6 +341,42 @@ app.post('/get_award', (req, res) => {
       res.send('fail');
   })
 });
+
+app.post('/get_project', (req, res) => {
+  getAllocation(req.body)
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+app.post('/get_collaborator', (req, res) => {
+  getCollaborator(req.body)
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+/*
+ * Endpoint to get project
+ */
+app.post('/get_student', (req, res) => {
+  getStudent(req.body)
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+
+
 
 /*
  * Endpoint to get all awards
@@ -325,31 +434,6 @@ app.post('/update_award', (req, res) => {
       console.log(e);
       res.send('fail');
   })
-});
-
-/*
- * Endpoint to add award
- */
-app.post('/add_project', (req, res) => {
-  addProject(req.body)
-  .then(() => res.send('success'))
-  .catch(e => {
-      console.log(e);
-      res.send('fail')
-  });
-});
-
-/*
- * Endpoint to get project
- */
-app.post('/get_project', (req, res) => {
-  getProject(req.body)
-  .then(res => JSON.stringify(res))
-  .then(s => res.send(s))
-  .catch(e => {
-      console.log(e);
-      res.send('fail');
-  });
 });
 
 app.post('/get_all_projects', (req, res) => {
