@@ -32,7 +32,6 @@
   	    clearAllForms();
 
   	    var awardFormSearch = document.getElementById("awardSearch");
-  	    var awardFormUpdate = document.getElementById("awardUpdate");
   	    var awardFormAdd = document.getElementById("awardAdd");
   	    var awardShowAll = document.getElementById("showAllAward");
 
@@ -53,8 +52,6 @@
 
   		awardFormSearch.addEventListener("click", awardFormReq, false);
   		awardFormSearch.req = 0;
-  		awardFormUpdate.addEventListener("click", awardFormReq, false);
-  		awardFormUpdate.req = 1;
   		awardFormAdd.addEventListener("click", awardFormReq, false);
   		awardFormAdd.req = 2;
   		awardShowAll.addEventListener("click", awardFormReq, false);
@@ -266,10 +263,6 @@
 	          console.log(item.value);
 	        }
 	    }
-	    //clear up the check on which fields are required for add
-	    // if (invalid && evt.target.dbReq == 1) {
-	    // 	throw("Please complete all fields");
-	    // }
 	    console.log(obj);
 	    var jsonObj = JSON.stringify(obj);
 	    //try catch here maybe?
@@ -315,8 +308,111 @@
 		var rightRows = tableRight.rows;
 		createResultLinks(leftRows);
 		createResultLinks(rightRows);
-		
+		var row = tableRight.insertRow(-1);
+		var col1 = row.insertCell(-1);
+		col1.innerHTML = "Update";
+		createUpdateClick(row, json);
 	};
+	
+	function createUpdateClick(row, json) {
+		row.onclick = function () {
+			updateRender(json);
+		};
+	}
+	
+	function updateRender(json) {
+		//store it to set after form clear
+		var qT = queryType;
+		var tableLeft = document.getElementById("tableLeft");
+	    tableLeft.innerHTML = "";
+	    var tableRight = document.getElementById("tableRight");
+		tableRight.innerHTML = "";
+		var updateForm = '', updateButton = '', cancelButton = '';
+		console.log(queryType);
+		switch (queryType) {
+			case (1):
+				updateForm = 'awardFormUpdate';
+				updateButton = 'awardUpdate';
+				cancelButton = 'awardCancel';
+				break;
+			case (2):
+				updateForm = 'allocationFormUpdate';
+				updateButton = 'allocationUpdate';
+				cancelButton = 'allocationCancel'
+				break;
+			case (3):
+				updateForm = 'studentFormUpdate';
+				updateButton = 'studentUpdate';
+				cancelButton = 'studentCancel'
+				break;
+			case (4):
+				updateForm = 'collaboratorFormUpdate';
+				updateButton = 'collaboratorUpdate';
+				cancelButton = 'collaboratorCancel'
+				break;
+		}
+		document.getElementById(updateForm).reset();
+		document.getElementById(updateForm).style.display = 'block';
+		//any input into the form that is greater than null, will be updated
+		document.getElementById(updateButton).onclick = function () {
+			updateReq(json, updateForm);
+		};
+		document.getElementById(cancelButton).onclick = function () {
+			detailedResult(json);
+		};
+	}
+	
+	function updateReq(params, updateForm) {
+		console.log(params);
+		var jsonParams = JSON.parse(params);
+		var obj = {};
+		var endpoint = '';
+		switch (queryType) {
+			case (1):
+				endpoint = '/update_award';
+				obj["myfinance_award_number"] = jsonParams["myfinance_award_number"];
+				break;
+			case (2):
+				endpoint = '/update_project';
+				break;
+			case (3):
+				endpoint = '/update_student';
+				break;
+			case (4):
+				endpoint = '/update_collaborator';
+				break;
+		}
+		// var obj = JSON.parse(params);
+		obj["split"] = "split";
+		var formInputs = document.getElementById(updateForm).elements;
+		console.log(formInputs);
+		for(var i = 0 ; i < formInputs.length ;i++) {
+	        var item = formInputs.item(i);
+	        // to weed out empty form inputs
+	        if (item.value.length <= 1) {
+	        	console.log("HERE");
+	        }
+	        else {
+	          obj[item.name] = item.value;
+	          console.log(item.value);
+	        }
+	    }
+	    var jsonObj = JSON.stringify(obj);
+	    //an object with two jsons becomes jsonified
+	    console.log(endpoint);
+	    console.log(jsonObj);
+	    fetch(endpoint, {
+		    method:'GET',
+		    headers: {
+		      'Content-Type': 'application/json',
+		    },
+		    body: jsonObj })
+		    .then(res => console.log(res))
+		    //add success/fail check later
+		    // .then(res => renderResults(res))
+		  .catch((e) => console.log(e));
+	    
+	}
 	
 	function createResultLinks(rows) {
 		console.log("current type is " + queryType);
