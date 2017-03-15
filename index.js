@@ -234,6 +234,10 @@ const updateAward = (post, which) => new Promise((resolve, reject) => {
     }});
 });
 
+/*
+ * Get-All Functions
+ */
+
 const getAllAwards = () => new Promise((resolve, reject) => {
     const query = 'SELECT * FROM ' + tb_awards;
     connection.query(query, function(err, results) {
@@ -246,17 +250,32 @@ const getAllAwards = () => new Promise((resolve, reject) => {
     }});
 });
 
-/*
- * Returns all project row matches (query is anything)
- * 'post' object contains any one valid field in the projects table with
- *      its corresponding value.
- * e.g. to search for funding_body_ref = 12345,
- *      call the method as follows: getProjects({funding_body_ref: 12345})
- * @param {JSON} post
- * @return {Array} sum
- */
-const getAllProjects = () => new Promise((resolve, reject) => {
+const getAllStudents = () => new Promise ((resolve, reject) => {
+    const query = 'SELECT * FROM ' + tb_students;
+    connection.query(query, function(err, results) {
+        if (!err) {
+            console.log(results);
+            resolve(results);
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+const getAllAllocations = () => new Promise((resolve, reject) => {
     const query = 'SELECT * FROM ' + tb_allocations;
+    connection.query(query, function(err, rows) {
+        if (!err) {
+            console.log(rows);
+            resolve(rows);
+        } else {
+            console.log(err);
+            reject(err);
+    }});
+});
+
+const getAllCollaborators = () => new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM ' + tb_collaborators;
     connection.query(query, function(err, rows) {
         if (!err) {
             console.log(rows);
@@ -301,7 +320,7 @@ app.post('/add_award', (req, res) => {
   });
 });
 
-app.post('/add_allocations', (req, res) => {
+app.post('/add_allocation', (req, res) => {
   addAllocation(req.body)
   .then(() => res.send('success'))
   .catch(e => {
@@ -310,7 +329,7 @@ app.post('/add_allocations', (req, res) => {
   });
 });
 
-app.post('/add_collaborators', (req, res) => {
+app.post('/add_collaborator', (req, res) => {
   addCollaborator(req.body)
   .then(() => res.send('success'))
   .catch(e => {
@@ -319,7 +338,7 @@ app.post('/add_collaborators', (req, res) => {
   });
 });
 
-app.post('/add_students', (req, res) => {
+app.post('/add_student', (req, res) => {
   addStudent(req.body)
   .then(() => res.send('success'))
   .catch(e => {
@@ -342,8 +361,18 @@ app.post('/get_award', (req, res) => {
   })
 });
 
-app.post('/get_project', (req, res) => {
+app.post('/get_allocation', (req, res) => {
   getAllocation(req.body)
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+app.post('/get_student', (req, res) => {
+  getStudent(req.body)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -362,24 +391,10 @@ app.post('/get_collaborator', (req, res) => {
   });
 });
 
-/*
- * Endpoint to get project
- */
-app.post('/get_student', (req, res) => {
-  getStudent(req.body)
-  .then(res => JSON.stringify(res))
-  .then(s => res.send(s))
-  .catch(e => {
-      console.log(e);
-      res.send('fail');
-  });
-});
-
-
 
 
 /*
- * Endpoint to get all awards
+ * Get-All endpoints
  */
 app.post('/get_all_awards', (req, res) => {
   getAllAwards()
@@ -391,8 +406,38 @@ app.post('/get_all_awards', (req, res) => {
   })
 });
 
+app.post('/get_all_allocations', (req, res) => {
+  getAllAllocations()
+  .then(res => JSON.stringify(res))
+  .then(s => res.send(s))
+  .catch(e => {
+      console.log(e);
+      res.send('fail');
+  });
+});
+
+app.post('/get_all_students', (req,res) => {
+    getAllStudents()
+    .then(res => JSON.stringify(res))
+    .then(s => res.send(s))
+    .catch(e => {
+        console.log(e);
+        res.send('fail');
+    })
+});
+
+app.post('/get_all_collaborators', (req,res) => {
+    getAllCollaborators()
+    .then(res => JSON.stringify(res))
+    .then(s => res.send(s))
+    .catch(e => {
+        console.log(e);
+        res.send('fail');
+    })
+});
+
 /*
- * Endpoint to update award
+ * Update Endpoints
  */
  function callUpdate (json) {
      console.log("updating call");
@@ -436,15 +481,6 @@ app.post('/update_award', (req, res) => {
   })
 });
 
-app.post('/get_all_projects', (req, res) => {
-  getAllProjects(req.body)
-  .then(res => JSON.stringify(res))
-  .then(s => res.send(s))
-  .catch(e => {
-      console.log(e);
-      res.send('fail');
-  });
-});
 
 app.post('/get_total_funding', (req, res) => {
     getTotalFunding()

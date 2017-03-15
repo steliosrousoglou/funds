@@ -125,15 +125,10 @@
 	          console.log(item.value);
 	        }
 	    }
-	    //clear up the check on which fields are required for add
-	    // if (invalid && evt.target.dbReq == 1) {
-	    // 	throw("Please complete all fields");
-	    // }
 	    console.log(obj);
 	    var jsonObj = JSON.stringify(obj);
 	    //try catch here maybe?
 	    console.log(jsonObj);
-	    // var body = evt.target.dbReq == 2? "" : body;
 	    fetch(endpoint, {
 		    method:'POST',
 		    headers: {
@@ -142,13 +137,6 @@
 		    body: jsonObj })
 		    .then(res => res.json())
 		    .then (res => renderResults(res))
-		    //it is still catching an error?
-		    // .then(res => console.log(res))
-		  //   .then(res => {
-		  //     if (res === 'fail') alert("Student Query Failed");
-		  //     else JSON.parse(res.text())
-		  //     })
-		  // .then(res => console.log(res)) // Pass json to a results displaying function
 		  .catch((e) => console.log(e));
 	};
 
@@ -161,19 +149,19 @@
 		switch (evt.target.req) {
 			case 0:
 				formInputs = document.getElementById("allocationFormSearch").elements;
-				endpoint = '/get_project';
+				endpoint = '/get_allocation';
 				break;
 			case 1:
 				formInputs = document.getElementById("allocationFormUpdate").elements;
-				endpoint = '/update_project';
+				endpoint = '/update_allocation';
 				break;
 			case 2:
 				formInputs = document.getElementById("allocationFormAdd").elements;
-				endpoint = '/add_project';
+				endpoint = '/add_allocation';
 				break;
 			case 3:
 				formInputs = document.getElementById("allocationFormSearch").elements;
-				endpoint = '/get_all_projects';
+				endpoint = '/get_all_allocations';
 				break;
 		}
 		var obj = {};
@@ -191,10 +179,6 @@
 	          console.log(item.value);
 	        }
 	    }
-	    //clear up the check on which fields are required for add
-	    // if (invalid && evt.target.dbReq == 1) {
-	    // 	throw("Please complete all fields");
-	    // }
 	    console.log(obj);
 	    var jsonObj = JSON.stringify(obj);
 	    //try catch here maybe?
@@ -209,13 +193,6 @@
 		    body: jsonObj })
 		    .then(res => res.json())
 		    .then (res => renderResults(res))
-		    //it is still catching an error?
-		    // .then(res => console.log(res))
-		  //   .then(res => {
-		  //     if (res === 'fail') alert("Award Query Failed");
-		  //     else JSON.parse(res.text())
-		  //     })
-		  // .then(res => console.log(res)) // Pass json to a results displaying function
 		  .catch((e) => console.log(e));
 		
 	};
@@ -223,6 +200,56 @@
 	function collaboratorFormReq (evt) {
 		evt.preventDefault();
 		queryType = 4;
+		var endpoint = '';
+		var formInputs;
+		switch (evt.target.req) {
+			case 0:
+				formInputs = document.getElementById("collaboratorFormSearch").elements;
+				endpoint = '/get_collaborator';
+				break;
+			case 1:
+				formInputs = document.getElementById("collaboratorFormUpdate").elements;
+				endpoint = '/update_collaborator';
+				break;
+			case 2:
+				formInputs = document.getElementById("collaboratorFormAdd").elements;
+				endpoint = '/add_collaborator';
+				break;
+			case 3:
+				formInputs = document.getElementById("collaboratorFormSearch").elements;
+				endpoint = '/get_all_collaborators';
+				break;
+		}
+		var obj = {};
+		console.log(formInputs);
+		var invalid = false;
+		for(var i = 0 ; i < formInputs.length ;i++) {
+	        var item = formInputs.item(i);
+	        // to weed out empty form inputs
+	        if (item.value.length <= 1) {
+	        	invalid = true;
+	        	console.log("HERE");
+	        }
+	        else {
+	          obj[item.name] = item.value;
+	          console.log(item.value);
+	        }
+	    }
+	    console.log(obj);
+	    var jsonObj = JSON.stringify(obj);
+	    //try catch here maybe?
+	    console.log(jsonObj);
+	    // var body = evt.target.dbReq == 2? "" : body;
+	    console.log(endpoint);
+	    fetch(endpoint, {
+		    method:'POST',
+		    headers: {
+		      'Content-Type': 'application/json',
+		    },
+		    body: jsonObj })
+		    .then(res => res.json())
+		    .then (res => renderResults(res))
+		  .catch((e) => console.log(e));
 	};
 
 	function awardFormReq (evt) {
@@ -267,7 +294,6 @@
 	    var jsonObj = JSON.stringify(obj);
 	    //try catch here maybe?
 	    console.log(jsonObj);
-	    // var body = evt.target.dbReq == 2? "" : body;
 	    fetch(endpoint, {
 		    method:'POST',
 		    headers: {
@@ -276,14 +302,6 @@
 		    body: jsonObj })
 		    .then(res => res.json())
 		    .then(res => renderResults(res))
-		    // .then (res => renderResults(res))
-		    //it is still catching an error?
-		    // .then(res => console.log(res))
-		  //   .then(res => {
-		  //     if (res === 'fail') alert("Award Query Failed");
-		  //     else JSON.parse(res.text())
-		  //     })
-		  // .then(res => console.log(res)) // Pass json to a results displaying function
 		  .catch((e) => console.log(e));
 	};
 	
@@ -418,16 +436,16 @@
 		console.log("current type is " + queryType);
 		for (var i = 0; i < rows.length; i++) {
 			//award -> allocation
-			if (queryType == 1 && (rows[i].cells[0].innerHTML == "finance_award_no"
-			|| rows[i].cells[0].innerHTML == "funding_body_ref")) {
+			if (queryType == 1 && (rows[i].cells[0].innerHTML == "myfinance_award_number"
+			|| rows[i].cells[0].innerHTML == "funding_body_reference")) {
 				var obj = {};
 				obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 				var jsonObj = JSON.stringify(obj);
 				console.log("adding allocation click");
 				createAllocationClick(rows[i], jsonObj);
 			}
-			//award or allocation -> student
-			if (queryType != 3 && rows[i].cells[0].innerHTML == "my_finance_code") {
+			//allocation -> student
+			if (queryType == 2 && rows[i].cells[0].innerHTML == "myfinance_code") {
 				var obj = {};
 				obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 				var jsonObj = JSON.stringify(obj);
@@ -435,8 +453,8 @@
 				createStudentClick(rows[i], jsonObj);
 			}
 			//allocation -> award
-			if (queryType == 2 && (rows[i].cells[0].innerHTML == "finance_award_no"
-			|| rows[i].cells[0].innerHTML == "funding_body_ref")) {
+			if (queryType == 2 && (rows[i].cells[0].innerHTML == "myfinance_award_no"
+			|| rows[i].cells[0].innerHTML == "funding_body_reference")) {
 				var obj = {};
 				obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 				var jsonObj = JSON.stringify(obj);
@@ -444,12 +462,28 @@
 				createAwardClick(rows[i], jsonObj);
 			}
 			//student -> allocation
-			if (queryType == 3 && rows[i].cells[0].innerHTML == "my_finance_code") {
+			if (queryType == 3 && rows[i].cells[0].innerHTML == "myfinance_code") {
 				var obj = {};
 				obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 				var jsonObj = JSON.stringify(obj);
 				console.log("adding allocation click");
 				createAllocationClick(rows[i], jsonObj);
+			} 
+			//student -> collaborator
+			if (queryType == 3 && rows[i].cells[0].innerHTML == "collaborator_code") {
+				var obj = {};
+				obj["myfinance_code"] = rows[i].cells[1].innerHTML;
+				var jsonObj = JSON.stringify(obj);
+				console.log("adding collaborator click");
+				createCollaboratorClick(rows[i], jsonObj);
+			} 
+			//collaborator -> student
+			if (queryType == 4 && rows[i].cells[0].innerHTML == "myfinance_code") {
+				var obj = {};
+				obj["collaborator_code"] = rows[i].cells[1].innerHTML;
+				var jsonObj = JSON.stringify(obj);
+				console.log("adding student click");
+				createStudentClick(rows[i], jsonObj);
 			} 
 		}	
 	};
@@ -476,6 +510,13 @@
 		};
 	}
 	
+	function createCollaboratorClick(row, jsonObj) {
+		//function to call a get request/search endpoint, and if successful clear forms, then render results}
+		row.onclick = function () {
+			collaboratorLinkQuery(jsonObj);
+		};
+	}
+	
 	function awardLinkQuery(jsonObj) {
 		console.log("queryType was " + queryType.toString());
 		queryType = 1;
@@ -489,13 +530,6 @@
 		    .then(res => res.json())
 		    //change query type here within a function/kind of like try/catching
 		    .then (res => renderResults(res))
-		    //it is still catching an error?
-		    // .then(res => console.log(res))
-		  //   .then(res => {
-		  //     if (res === 'fail') alert("Award Query Failed");
-		  //     else JSON.parse(res.text())
-		  //     })
-		  // .then(res => console.log(res)) // Pass json to a results displaying function
 		  .catch((e) => console.log(e));
 	}
 	
@@ -503,7 +537,7 @@
 		console.log("queryType was " + queryType.toString());
 		queryType = 2;
 		console.log("searching for allocationLink with " + jsonObj);
-		fetch('/get_project', {
+		fetch('/get_allocation', {
 		    method:'POST',
 		    headers: {
 		      'Content-Type': 'application/json',
@@ -540,6 +574,22 @@
 		  //     else JSON.parse(res.text())
 		  //     })
 		  // .then(res => console.log(res)) // Pass json to a results displaying function
+		  .catch((e) => console.log(e));
+	}
+	
+	function collaboratorLinkQuery(jsonObj) {
+		console.log("queryType was " + queryType.toString());
+		queryType = 4;
+		console.log("searching for collaboratorLink with " + jsonObj);
+		fetch('/get_collaborator', {
+		    method:'POST',
+		    headers: {
+		      'Content-Type': 'application/json',
+		    },
+		    body: jsonObj })
+		    .then(res => res.json())
+		    //change query type here within a function/kind of like try/catching
+		    .then (res => renderResults(res))
 		  .catch((e) => console.log(e));
 	}
 	
