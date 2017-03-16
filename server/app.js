@@ -142,7 +142,7 @@ app.post('/get_student', (req, res) => {
  */
 
 app.post('/update_allocation', (req, res) => {
-  sql.updateTable(helpers.callUpdate(req.body), tb_allocations)
+  sql.updateTable(connection, helpers.callUpdate(req.body), tb_allocations)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -151,7 +151,7 @@ app.post('/update_allocation', (req, res) => {
 });
 
 app.post('/update_award', (req, res) => {
-  sql.updateTable(helpers.callUpdate(req.body), tb_awards)
+  sql.updateTable(connection, helpers.callUpdate(req.body), tb_awards)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -160,7 +160,7 @@ app.post('/update_award', (req, res) => {
 });
 
 app.post('/update_collaborator', (req, res) => {
-  sql.updateTable(helpers.callUpdate(req.body), tb_collaborators)
+  sql.updateTable(connection, helpers.callUpdate(req.body), tb_collaborators)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -169,7 +169,7 @@ app.post('/update_collaborator', (req, res) => {
 });
 
 app.post('/update_student', (req, res) => {
-  sql.updateTable(helpers.callUpdate(req.body), tb_students)
+  sql.updateTable(connection, helpers.callUpdate(req.body), tb_students)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
