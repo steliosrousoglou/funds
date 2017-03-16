@@ -3,8 +3,9 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const mysql = require('mysql');
 
-/* Helper file */
+/* Method files */
 const helpers = require('./helpers.js');
+const sql = require('./sql.js');
 
 /* Database Name */
 const db_name = 'funds';
@@ -52,114 +53,12 @@ connection.connect(function(err) {
     }
 });
 
-/* Main methods */
-
-/**
- * Adds entry to given table
- * @param {json} obj
- * @param {int} option
- */
-const addToTable = (table, obj) => new Promise((resolve, reject) => {
-    const query = 'INSERT INTO ' + table + ' SET ?';
-    connection.query(query, obj, function(err, rows) {
-        if (!err) {
-            resolve();
-        } else {
-            console.log(err);
-            reject();
-        }
-    });
-});
-
-/**
- * Returns array with all matches from given table
- * 'obj' object contains any valid fields in the given table with
- *      their corresponding values
- * @param {JSON} obj
- * @return {Array} rows
- */
-const getFromTable = (table, obj) => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + table + ' WHERE ' + formatLIKEs(obj);
-    connection.query(query, obj, function(err, rows) {
-        if (!err) {
-            resolve(rows);
-        } else {
-            console.log(err);
-            reject(err);
-    }});
-});
-
-
-/**
- * Updates info of specified entry in given table
- * @param {JSON} jsonArray
- * @param {JSON} table
- */
-const updateTable = (jsonArray, table) => new Promise((resolve, reject) => {
-    const query = 'UPDATE ' + table + ' SET ? WHERE ' + helpers.formatANDs(jsonArray[1]);
-    connection.query(query, jsonArray[0], function(err, res, rows) {
-        if (!err) {
-            resolve();
-        } else {
-            console.log(err);
-            reject();
-    }});
-});
-
- /**
- * Removes matches from given table
- * @param {JSON} obj
- * @param {string} table
- */
-const removeFromTable = (table, obj) => new Promise((resolve, reject) => {
-    const query = 'DELETE * FROM ' + table + ' WHERE ' + helpers.formatANDs(obj);
-    connection.query(query, obj, function(err, rows) {
-        if (!err) {
-            resolve();
-        } else {
-            console.log(err);
-            reject(err);
-    }});
-});
-
-/*
- * Get all entries of given table
- * @param {string} table
- */
-
-const getAll = table => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + table;
-    connection.query(query, function(err, results) {
-        if (!err) {
-            resolve(results);
-        } else {
-            console.log(err);
-            reject(err);
-    }});
-});
-
-/*
- *  Returns JSON object containing total
- *  award amounts from each funding body
- *  @return {JSON} totals
- */
-const getTotalFunding = () => new Promise((resolve, reject) => {
-    const query = 'SELECT * FROM ' + tb_awards;
-    connection.query(query, function(err, rows) {
-        if (!err) {
-            resolve(helpers.totalFunding(rows));
-        } else {
-            console.log(err);
-            reject(err);
-    }});
-});
-
 /*
  * Add endpoints
  */
 
 app.post('/add_allocation', (req, res) => {
-  addToTable(tb_allocations, req.body)
+  sql.addToTable(connection, req.body, tb_allocations)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -168,7 +67,7 @@ app.post('/add_allocation', (req, res) => {
 });
 
 app.post('/add_award', (req, res) => {
-  addToTable(tb_awards, req.body)
+  sql.addToTable(connection, req.body, tb_awards)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -177,7 +76,7 @@ app.post('/add_award', (req, res) => {
 });
 
 app.post('/add_collaborator', (req, res) => {
-  addToTable(tb_collaborators, req.body)
+  sql.addToTable(connection, req.body, tb_collaborators)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -186,7 +85,7 @@ app.post('/add_collaborator', (req, res) => {
 });
 
 app.post('/add_student', (req, res) => {
-  addToTable(tb_students, req.body)
+  sql.addToTable(connection, req.body, tb_students)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -199,7 +98,7 @@ app.post('/add_student', (req, res) => {
  */
  
 app.post('/get_allocation', (req, res) => {
-  getFromTable(tb_allocations, req.body)
+  sql.getFromTable(connection, req.body, tb_allocations)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -209,7 +108,7 @@ app.post('/get_allocation', (req, res) => {
 });
 
 app.post('/get_award', (req, res) => {
-  getFromTable(tb_awards, req.body)
+  sql.getFromTable(connection, req.body, tb_awards)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -219,7 +118,7 @@ app.post('/get_award', (req, res) => {
 });
 
 app.post('/get_collaborator', (req, res) => {
-  getFromTable(tb_collaborators, req.body)
+  sql.getFromTable(connection, req.body, tb_collaborators)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -229,7 +128,7 @@ app.post('/get_collaborator', (req, res) => {
 });
 
 app.post('/get_student', (req, res) => {
-  getFromTable(tb_students, req.body)
+  sql.getFromTable(connection, req.body, tb_students)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -243,7 +142,7 @@ app.post('/get_student', (req, res) => {
  */
 
 app.post('/update_allocation', (req, res) => {
-  updateTable(helpers.callUpdate(req.body), tb_allocations)
+  sql.updateTable(helpers.callUpdate(req.body), tb_allocations)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -252,7 +151,7 @@ app.post('/update_allocation', (req, res) => {
 });
 
 app.post('/update_award', (req, res) => {
-  updateTable(helpers.callUpdate(req.body), tb_awards)
+  sql.updateTable(helpers.callUpdate(req.body), tb_awards)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -261,7 +160,7 @@ app.post('/update_award', (req, res) => {
 });
 
 app.post('/update_collaborator', (req, res) => {
-  updateTable(helpers.callUpdate(req.body), tb_collaborators)
+  sql.updateTable(helpers.callUpdate(req.body), tb_collaborators)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -270,7 +169,7 @@ app.post('/update_collaborator', (req, res) => {
 });
 
 app.post('/update_student', (req, res) => {
-  updateTable(helpers.callUpdate(req.body), tb_students)
+  sql.updateTable(helpers.callUpdate(req.body), tb_students)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -283,7 +182,7 @@ app.post('/update_student', (req, res) => {
  */
 
 app.post('/remove_allocation', (req, res) => {
-  removeFromTable(tb_allocations, req.body)
+  sql.removeFromTable(connection, req.body, tb_allocations)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -292,7 +191,7 @@ app.post('/remove_allocation', (req, res) => {
 });
 
 app.post('/remove_award', (req, res) => {
-  removeFromTable(tb_awards, req.body)
+  sql.removeFromTable(connection, req.body, tb_awards)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -301,7 +200,7 @@ app.post('/remove_award', (req, res) => {
 });
 
 app.post('/remove_collaborator', (req, res) => {
-  removeFromTable(tb_collaborators, req.body)
+  sql.removeFromTable(connection, req.body, tb_collaborators)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -310,7 +209,7 @@ app.post('/remove_collaborator', (req, res) => {
 });
 
 app.post('/remove_student', (req, res) => {
-  removeFromTable(tb_students, req.json)
+  sql.removeFromTable(connection, req.body, tb_students)
   .then(() => res.send('success'))
   .catch(e => {
       console.log(e);
@@ -323,7 +222,7 @@ app.post('/remove_student', (req, res) => {
  */
  
 app.post('/get_all_awards', (req, res) => {
-  getAll(tb_awards)
+  sql.getAll(tb_awards)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -333,7 +232,7 @@ app.post('/get_all_awards', (req, res) => {
 });
 
 app.post('/get_all_allocations', (req, res) => {
-  getAll(tb_allocations)
+  sql.getAll(tb_allocations)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -343,7 +242,7 @@ app.post('/get_all_allocations', (req, res) => {
 });
 
 app.post('/get_all_students', (req,res) => {
-    getAll(tb_students)
+    sql.getAll(tb_students)
     .then(res => JSON.stringify(res))
     .then(s => res.send(s))
     .catch(e => {
@@ -353,7 +252,7 @@ app.post('/get_all_students', (req,res) => {
 });
 
 app.post('/get_all_collaborators', (req,res) => {
-    getAll(tb_collaborators)
+    sql.getAll(tb_collaborators)
     .then(res => JSON.stringify(res))
     .then(s => res.send(s))
     .catch(e => {
@@ -363,7 +262,7 @@ app.post('/get_all_collaborators', (req,res) => {
 });
 
 app.post('/get_total_funding', (req, res) => {
-    getTotalFunding()
+    sql.getTotalFunding(connection, tb_awards)
     .then(res => JSON.stringify(res))
     .then(s => res.send(s))
     .catch(e => {
