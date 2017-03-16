@@ -10,14 +10,12 @@ const helpers = require('./helpers.js');
 const db_name = 'funds';
 
 /* Database Table Names */
-// Award table
-
 const tb_allocations = 'allocations_dev';
 const tb_awards = 'awards_dev';
 const tb_collaborators = 'collaborators_dev';
 const tb_students = 'students_dev';
 
-/* Create Database Connection Object*/
+/* Create Database Connection Object */
 var connection = mysql.createConnection({
     host: process.env.IP,
     port: '3306',

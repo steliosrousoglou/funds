@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+   <!--  <body>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a href="#" class="navbar-brand">BLOGSTER</a>
+                </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="login.php">Login</a></li>
+                        <li class="active"><a href="register.php">Register</a></li>
+                    </ul>
+                </div>
+        </nav>
+    </body> -->
+    
+    <!--send this form to a button on event listener, in JS halt default response and-->
+    <!--instead fetch a request to add_award for post -->
+    <form action="register.php" method="post" align="center">
+    <fieldset>
+        <div class="form-group">
+            <input autofocus class="form-control" name="funding_body_ref" id="funding_body_ref" placeholder="Funding Body Ref" type="text" size="30"/>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="finance_award_no" id="finance_award_no" placeholder="Finance Award Num" type="number" size="30"/>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="my_finance_code" id="my_finance_code" placeholder="My Finance Code" type="number" size="30"/>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="EPSRC_voucher" id="EPSRC_voucher" placeholder="EPSRC" type="number" size="30"/>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="department" id="department" placeholder="Department" type="text" size="30"/>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="EPSRC_voucher" id="EPSRC_voucher" placeholder="EPSRC" type="number" size="30"/>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="confirmation" id="confirmation" placeholder="Confirm Password" type="password" size="30"/>
+        </div><br>
+        <div class="form-group" align="left">
+            <input type="radio" name="gender" value="Male" checked> Male
+            <input type="radio" name="gender" value="Female"> Female
+            <input type="radio" name="gender" value="Other"> Other
+        </div><br>
+        <div class="form-group" align="left">
+            Birthday
+            <input type="date" class="form-control" name="birthday" placeholder="YYYY-MM-DD">
+        </div><br>
+        <div class="form-group">
+            <button class="btn btn-default" type="submit" style="vertical-align:left; float: center">
+                <span aria-hidden="true" class="glyphicon glyphicon-log-in"></span>
+                Register
+            </button>
+            <button class="btn btn-default" type="reset" style="vertical-align:left; float: center">
+                <span aria-hidden="true" class="glyphicon glyphicon-log-in"></span>
+                Reset
+            </button>
+        </div><br>
+    </fieldset>
+</form>
+</html>
