@@ -496,8 +496,11 @@
 	        	console.log("HERE");
 	        }
 	        else {
-	          obj[item.name] = item.value;
-	          console.log(item.value);
+	        	if (obj[item.name] != null) {
+	        		delete obj[item.name];
+	        	}
+		          obj[item.name] = item.value;
+		          console.log(item.value);
 	        }
 	    }
 	    var jsonObj = JSON.stringify(obj);

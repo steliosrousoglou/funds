@@ -222,17 +222,18 @@ app.post('/remove_student', (req, res) => {
  */
  
 app.post('/get_all_awards', (req, res) => {
-  sql.getAll(tb_awards)
+  sql.getAll(connection, tb_awards)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
+      console.log("printing error");
       console.log(e);
       res.send('fail');
   });
 });
 
 app.post('/get_all_allocations', (req, res) => {
-  sql.getAll(tb_allocations)
+  sql.getAll(connection, tb_allocations)
   .then(res => JSON.stringify(res))
   .then(s => res.send(s))
   .catch(e => {
@@ -242,7 +243,7 @@ app.post('/get_all_allocations', (req, res) => {
 });
 
 app.post('/get_all_students', (req,res) => {
-    sql.getAll(tb_students)
+    sql.getAll(connection, tb_students)
     .then(res => JSON.stringify(res))
     .then(s => res.send(s))
     .catch(e => {
@@ -252,7 +253,7 @@ app.post('/get_all_students', (req,res) => {
 });
 
 app.post('/get_all_collaborators', (req,res) => {
-    sql.getAll(tb_collaborators)
+    sql.getAll(connection, tb_collaborators)
     .then(res => JSON.stringify(res))
     .then(s => res.send(s))
     .catch(e => {
