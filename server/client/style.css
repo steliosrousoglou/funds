@@ -59,3 +59,14 @@
 .dropdown:hover .dropbtn {
     background-color: #11A2D8;
 }
+
+.navBar {
+    width: 100%;
+    background-color: #9fe0f9;
+    border-radius: 25px;
+}
+
+.menu {
+    width: 50%;
+    margin: 0 auto;
+}
