@@ -56,9 +56,22 @@
   		
   		var awardFormCancel = document.getElementById("awardCancel");
   		var awardFormUpdate = document.getElementById("awardUpdate");
+  		var allocationFormCancel = document.getElementById("allocationCancel");
+  		var allocationFormUpdate = document.getElementById("allocationUpdate");
+  		var studentFormCancel = document.getElementById("studentCancel");
+  		var studentFormUpdate = document.getElementById("studentUpdate");
+  		var collaboratorFormCancel = document.getElementById("collaboratorCancel");
+  		var collaboratorFormUpdate = document.getElementById("collaboratorUpdate");
+  		
   		
   		awardFormCancel.addEventListener("click", updatePreventSubmit, false);
   		awardFormUpdate.addEventListener("click", updatePreventSubmit, false);
+  		allocationFormCancel.addEventListener("click", updatePreventSubmit, false);
+  		allocationFormUpdate.addEventListener("click", updatePreventSubmit, false);
+  		studentFormCancel.addEventListener("click", updatePreventSubmit, false);
+  		studentFormUpdate.addEventListener("click", updatePreventSubmit, false);
+  		collaboratorFormCancel.addEventListener("click", updatePreventSubmit, false);
+  		collaboratorFormUpdate.addEventListener("click", updatePreventSubmit, false);
 
   		awardFormSearch.addEventListener("click", awardFormReq, false);
   		awardFormSearch.req = 0;
