@@ -11,6 +11,10 @@
 <body>
 
 	<!--Nav bar with 3 options for dropdown- later on add hidden fields for read only-->
+	
+<div class="navBar">
+	<br>
+	<div class="menu">
 	<div class="dropdown">
 	  <button class="dropbtn">Awards</button>
 	  <div class="dropdown-content">
@@ -43,6 +47,10 @@
 	  	<p id="collaboratorBtnAdd" onClick="clearAllForms();renderCollaboratorForm(3);">Add</p>
 	</div>
 	</div>
+	</div>
+	<br>
+</div>
+	
 	
   <!--<script src="fetch.js"></script>-->
   <script src="script.js"></script>
@@ -147,7 +155,7 @@
 		<form id="allocationFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
 			<input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
 			<input name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
-			<input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+			<input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
 			<input name="department" type="text" placeholder="Department">
 			<input name="faculty" type="text" placeholder="Faculty/PI">
 			<input name="budget" type="number" step="0.01" placeholder="Budget">
@@ -160,7 +168,7 @@
 	<form id="allocationFormUpdate" name="allocationForm" method="post" enctype="multipart/form-data" style="display: none;">
 	    <input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
       <input name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
-      <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
       Allocation Type:<select name="allocation_type">
             <option value='Studentship'>Studentship</option>
             <option value="Fellowship">Fellowship</option>
@@ -187,7 +195,7 @@
  <form id="allocationFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
       <input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
       <input name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
-      <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
       Allocation Type:<select name="allocation_type">
             <option value='Studentship'>Studentship</option>
             <option value="Fellowship">Fellowship</option>
@@ -257,7 +265,7 @@
 	    <input name="first_name" type="text" placeholder="First Name"> 
       <input name="surname" type="text" placeholder="Surname">
       <input name="student_id" type="text" placeholder="Student ID">
-      <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
       <input name="start_date" type="date" placeholder="Start Date">
       <input name="end_date" type="date" placeholder="End Date">
       <input name="fte" type="text" placeholder="FTE">
@@ -295,7 +303,7 @@
 	    <input name="first_name" type="text" placeholder="First Name"> 
       <input name="surname" type="text" placeholder="Surname">
       <input name="student_id" type="text" placeholder="Student ID">
-      <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
       <input name="start_date" type="date" placeholder="Start Date">
       <input name="end_date" type="date" placeholder="End Date">
       <input name="fte" type="text" placeholder="FTE">
@@ -341,7 +349,7 @@
 	    <input name="first_name" type="text" placeholder="First Name"> 
       <input name="surname" type="text" placeholder="Surname">
       <input name="student_id" type="text" placeholder="Student ID">
-      <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
       <input name="start_date" type="date" placeholder="Start Date">
       <input name="end_date" type="date" placeholder="End Date">
       <input name="fte" type="text" placeholder="FTE">
@@ -394,7 +402,7 @@
 	
 		<form id="collaboratorFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
 	    <input name="collaborator_name" type="text" placeholder="Collaborator Name"> 
-	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
 	    <input name="amount" type="number" step="0.01" placeholder="Award amount">
 	    <input name="first_name" type="text" placeholder="Student First Name">
 	    <input name="surname" type="text" placeholder="Student Last Name">
@@ -408,7 +416,7 @@
 
 	<form id="collaboratorFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
 	    <input name="collaborator_name" type="text" placeholder="Collaborator Name"> 
-	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
 	    <input name="amount" type="number" step="0.01" placeholder="Award amount">
 	    <input name="first_name" type="text" placeholder="Student First Name">
 	    <input name="surname" type="text" placeholder="Student Last Name">
@@ -422,7 +430,7 @@
 
 	<form id="collaboratorFormUpdate" method="post" enctype="multipart/form-data" style="display: none;">
 	    <input name="collaborator_name" type="text" placeholder="Collaborator Name"> 
-	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
+	    <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
 	    <input name="amount" type="number" step="0.01" placeholder="Award amount">
 	    <input name="first_name" type="text" placeholder="Student First Name">
 	    <input name="surname" type="text" placeholder="Student Last Name">

@@ -717,6 +717,7 @@
 	}
 
 	function renderResults(jsonObj) {
+		console.log(jsonObj);
 		document.getElementById("awardFormSearch").style.display="none";
 		document.getElementById("allocationFormSearch").style.display="none";
 		document.getElementById("studentFormSearch").style.display="none";
@@ -744,7 +745,10 @@
 		    var obj = jsonObj[i];
 		    for (var key in obj){
 		    	var cell = row.insertCell(-1);
-		    	cell.innerHTML = obj[key];
+		    	if ((key === "start_date" || key === "end_date" || key == "form_s") && (obj[key] != null && obj[key].length >= 10)) {
+		    		cell.innerHTML = obj[key].substring(0, 10);
+		    	}
+		    	else cell.innerHTML = obj[key];
 		    }
 		    var jsonCell = row.insertCell(-1);
 		    jsonCell.innerHTML = JSON.stringify(jsonObj[i]);
