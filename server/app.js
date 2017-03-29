@@ -151,6 +151,8 @@ app.post('/update_allocation', (req, res) => {
 });
 
 app.post('/update_award', (req, res) => {
+  console.log(req.body);
+  console.log(typeof(req.body));
   sql.updateTable(connection, helpers.callUpdate(req.body), tb_awards)
   .then(() => res.send('success'))
   .catch(e => {
