@@ -28,7 +28,8 @@ const addToTable = (connection, obj, table) => new Promise((resolve, reject) => 
 const getAll = (connection, table) => new Promise((resolve, reject) => {
     const query = 'SELECT * FROM ' + table;
     connection.query(query, function(err, results) {
-        if (!err) {console.log(results);
+        if (!err) {
+            // console.log(results);
             resolve(results);
         } else {
             console.log(err);

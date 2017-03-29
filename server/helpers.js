@@ -3,20 +3,20 @@
  */
 
 const callUpdate = json => {
-    var params = {};
-    var updates = {};
-    var split = false;
-    for (var key in json) {
-        if (json[key] == null || json[key] == '') continue;
-        else if (split) {
-            updates[key] = json[key];
-        } else if (key == "split"){
-            split = true;
-        } else {
-            params[key] = json[key];
-        }
-    }
-    return [updates, params];
+    // var params = {};
+    // var updates = {};
+    // var split = false;
+    // for (var key in json) {
+    //     if (json[key] == null || json[key] == '') continue;
+    //     else if (split) {
+    //         updates[key] = json[key];
+    //     } else if (key == "split"){
+    //         split = true;
+    //     } else {
+    //         params[key] = json[key];
+    //     }
+    // }
+    return [json["0"], json["1"]];
 };
 
 /*

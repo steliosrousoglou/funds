@@ -471,17 +471,17 @@
 	
 	function updateReq(params, updateForm) {
 		console.log("params are " + params);
-		// var jsonParams = JSON.parse(params);
-		var obj = {};
+		// sending JSON stringified object array length 2
+		var jsonUpdates = {};
 		var jsonParams = JSON.parse(params);
-		for (var key in jsonParams) {
-			if (jsonParams[key] == null || jsonParams[key].length < 1) {
-	        	console.log("HERE");
-	        }
-	        else {
-	        	obj[key] = jsonParams[key];
-	        }
-		}
+		// for (var key in jsonParams) {
+		// 	if (jsonParams[key] == null || jsonParams[key].length < 1) {
+	 //       	console.log("HERE");
+	 //       }
+	 //       else {
+	 //       	obj[key] = jsonParams[key];
+	 //       }
+		// }
 		var endpoint = '';
 		switch (queryType) {
 			case (1):
@@ -499,7 +499,7 @@
 				break;
 		}
 		// var obj = JSON.parse(params);
-		obj["split"] = "split";
+		// obj["split"] = "split";
 		var formInputs = document.getElementById(updateForm).elements;
 		console.log(formInputs);
 		for(var i = 0 ; i < formInputs.length ;i++) {
@@ -509,13 +509,13 @@
 	        	console.log("HERE");
 	        }
 	        else {
-	        	if (obj[item.name] != null) {
-	        		delete obj[item.name];
-	        	}
-		          obj[item.name] = item.value;
-		          console.log(item.value);
+	        	jsonUpdates[item.name] = item.value;
+	        	console.log(item.value);
 	        }
 	    }
+	    var obj = {};
+	    obj[0] = jsonUpdates;
+	    obj[1] = jsonParams;
 	    var jsonObj = JSON.stringify(obj);
 	    //an object with two jsons becomes jsonified
 	    console.log(endpoint);
