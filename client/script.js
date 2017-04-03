@@ -458,6 +458,23 @@
 		}
 		document.getElementById(updateForm).reset();
 		document.getElementById(updateForm).style.display = 'block';
+		console.log(json);
+		console.log(typeof(json));
+		var formFill = JSON.parse(json);
+		var formElements = document.getElementById(updateForm).elements;
+		console.log(formElements);
+		console.log(typeof(formElements));
+		for (var i = 0; i < formElements.length; i++) {
+			var item = formElements.item(i);
+			console.log(item);
+    		if ((item.name === "start_date" || item.name === "end_date" || 
+    		item.name == "form_s" || item.name == "fes_due") && (formFill[item.name] != null)) {
+    			item.value = formFill[item.name].substring(0,10);
+    		}
+			else if (formFill[item.name] != null) {
+				item.value = formFill[item.name];
+			}
+		}
 		//any input into the form that is greater than null, will be updated
 		document.getElementById(updateButton).onclick = function () {
 			updateReq(json, updateForm);
@@ -745,7 +762,7 @@
 		    var obj = jsonObj[i];
 		    for (var key in obj){
 		    	var cell = row.insertCell(-1);
-		    	if ((key === "start_date" || key === "end_date" || key == "form_s") && (obj[key] != null && obj[key].length >= 10)) {
+		    	if ((key === "start_date" || key === "end_date" || key == "form_s" || key == "fes_due") && (obj[key] != null && obj[key].length >= 10)) {
 		    		cell.innerHTML = obj[key].substring(0, 10);
 		    	}
 		    	else cell.innerHTML = obj[key];
