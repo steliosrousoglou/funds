@@ -50,120 +50,138 @@
 	</div>
 	<br>
 </div>
+
+<hr>
 	
 	
   <!--<script src="fetch.js"></script>-->
   <script src="script.js"></script>
 
-  <br><br>
-  	<!-- <form id="awardForm" name="awardForm" method="post" enctype="multipart/form-data">
-	  	<input name="funding_body_name" type="text" placeholder="Funding Body Name"> 
-	  	<input name="award_type" type="text" placeholder="Award Type">
-	  	<input name="award_name" type="text" placeholder="Award Name">
-	  	<input name="principal_investigator" type="text" placeholder ="Principal Investigator">
-	  	<input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
-	  	<input name="myfinance_award_number" type="text" placeholder="My Finance Award No.">
-		<input name="award_amount" type="number" step="0.01" placeholder="Award amount">
-		<input name="fes_due" type="text" placeholder="FES Due"> 
-		Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-	    <input name="staff_name" type="text" placeholder="Staff Name">
-	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
-	</form> -->
-	
+  <br>
 	<!-- Various forms for sending json -->
 	<form id="awardFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
-	  	<input name="funding_body_name" type="text" placeholder="Funding Body Name"> 
-	  	<input name="award_type" type="text" placeholder="Award Type">
-	  	<input name="award_name" type="text" placeholder="Award Name">
-	  	<input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
-	  	<input name="myfinance_award_number" type="text" placeholder="My Finance Award No.">
-		<input name="award_amount" type="number" step="0.01" placeholder="Award amount">
-		FES Due:
-		<input name="fes_due" type="date" placeholder="FES Due">  
-		Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-	    <button id="awardSearch" name="search" type="submit">Search</button>
-	    <button id="showAllAward" name="showAll" type="submit">Show All Awards</button>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Name</label>
+				<input class="form-control" name="funding_body_name" type="text" placeholder="Funding Body Name"> 
+				<label>Award Type</label>
+			  	<input class="form-control" name="award_type" type="text" placeholder="Award Type">
+			  	<label>Award Name</label>
+			  	<input class="form-control" name="award_name" type="text" placeholder="Award Name">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Reference</label>
+				<input class="form-control" name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
+				<label>MyFinance Award No.</label>
+		  		<input class="form-control" name="myfinance_award_number" type="text" placeholder="My Finance Award No.">
+		  		<label>Award Amount</label>
+		  		<input class="form-control" name="award_amount" type="number" step="0.01" placeholder="Award amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>FES Due</label>
+				<input class="form-control" name="fes_due" type="date" placeholder="FES Due">  
+				<label>Start Date</label>
+		  		<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+		  		<label>End Date</label>
+		  		<input class="form-control" name="end_date" type="date" placeholder="End Date">
+			</div>
+		</div>
+	    <button class="btn btn-primary" id="awardSearch" name="search" type="submit">Search</button>
+	    <button class="btn btn-default" id="showAllAward" name="showAll" type="submit">Show All Awards</button>
 	</form>
 
 	<form id="awardFormUpdate" name="awardForm" method="post" enctype="multipart/form-data"style="display: none;">
-	  	<input name="funding_body_name" type="text" placeholder="Funding Body Name"> 
-	  	<input name="award_type" type="text" placeholder="Award Type">
-	  	<input name="award_name" type="text" placeholder="Award Name">
-	  	<input name="principal_investigator" type="text" placeholder ="Principal Investigator">
-	  	<input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
-	  	<input name="myfinance_award_number" type="text" placeholder="My Finance Award No.">
-		<input name="award_amount" type="number" step="0.01" placeholder="Award amount">
-		FES Due:
-		<input name="fes_due" type="date" placeholder="FES Due">  
-		Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-	    <input name="staff_name" type="text" placeholder="Staff Name">
-	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
-	    <button id="awardUpdate" name="update" type="submit">Update</button>
-	    <button id="awardCancel" name="cancel" type="submit">Cancel</button>
+	  	<div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Name</label>
+				<input class="form-control" name="funding_body_name" type="text" placeholder="Funding Body Name"> 
+				<label>Award Type</label>
+			  	<input class="form-control" name="award_type" type="text" placeholder="Award Type">
+			  	<label>Award Name</label>
+			  	<input class="form-control" name="award_name" type="text" placeholder="Award Name">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Reference</label>
+				<input class="form-control" name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
+				<label>MyFinance Award No.</label>
+		  		<input class="form-control" name="myfinance_award_number" type="text" placeholder="My Finance Award No.">
+		  		<label>Award Amount</label>
+		  		<input class="form-control" name="award_amount" type="number" step="0.01" placeholder="Award amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>FES Due</label>
+				<input class="form-control" name="fes_due" type="date" placeholder="FES Due">  
+				<label>Start Date</label>
+		  		<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+		  		<label>End Date</label>
+		  		<input class="form-control" name="end_date" type="date" placeholder="End Date">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Principal Investigator</label>
+				<input class="form-control" name="principal_investigator" type="text" placeholder="Principal Investigator">  
+				<label>Staff Name</label>
+		  		<input class="form-control" name="staff_name" type="text" placeholder="Staff Name">
+		  		<label>Notes</label>
+		  		<textarea class="form-control" name="notes" type="textarea" placeholder="Notes"></textarea>
+			</div>
+		</div>
+	    <button class="btn btn-primary" id="awardUpdate" name="update" type="submit">Update</button>
+	    <button class="btn btn-default" id="awardCancel" name="cancel" type="submit">Cancel</button>
 	</form>
 
 	<form id="awardFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
-	  	<input name="funding_body_name" type="text" placeholder="Funding Body Name"> 
-	  	<input name="award_type" type="text" placeholder="Award Type">
-	  	<input name="award_name" type="text" placeholder="Award Name">
-	  	<input name="principal_investigator" type="text" placeholder ="Principal Investigator">
-	  	<input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
-	  	<input name="myfinance_award_number" type="text" placeholder="My Finance Award No.">
-		<input name="award_amount" type="number" step="0.01" placeholder="Award amount">
-		FES Due:
-		<input name="fes_due" type="date" placeholder="FES Due">  
-		Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-	    <input name="staff_name" type="text" placeholder="Staff Name">
-	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
-	    <button id="awardAdd" name="add" type="submit">Add</button>
+	  	<div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Name</label>
+				<input class="form-control" name="funding_body_name" type="text" placeholder="Funding Body Name"> 
+				<label>Award Type</label>
+			  	<input class="form-control" name="award_type" type="text" placeholder="Award Type">
+			  	<label>Award Name</label>
+			  	<input class="form-control" name="award_name" type="text" placeholder="Award Name">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Reference</label>
+				<input class="form-control" name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
+				<label>MyFinance Award No.</label>
+		  		<input class="form-control" name="myfinance_award_number" type="text" placeholder="My Finance Award No.">
+		  		<label>Award Amount</label>
+		  		<input class="form-control" name="award_amount" type="number" step="0.01" placeholder="Award amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>FES Due</label>
+				<input class="form-control" name="fes_due" type="date" placeholder="FES Due">  
+				<label>Start Date</label>
+		  		<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+		  		<label>End Date</label>
+		  		<input class="form-control" name="end_date" type="date" placeholder="End Date">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Principal Investigator</label>
+				<input class="form-control" name="principal_investigator" type="text" placeholder="Principal Investigator">  
+				<label>Staff Name</label>
+		  		<input class="form-control" name="staff_name" type="text" placeholder="Staff Name">
+		  		<label>Notes</label>
+		  		<textarea class="form-control" name="notes" type="textarea" placeholder="Notes"></textarea>
+			</div>
+		</div>
+	    <button class="btn btn-primary" id="awardAdd" name="add" type="submit">Add</button>
 	</form>
-
-
-<!-- 	<form id="allocationForm" name="allocationForm" method="post" enctype="multipart/form-data">
-	    <input name="funding_body_ref" type="text" placeholder="Funder Reference"> 
-	    <input name="finance_award_no" type="number" placeholder="Award Number">
-	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
-	    Award Type:<select name="type">
-			  		<option value="Studentship">Studentship</option>
-			  		<option value="Fellowship">Fellowship</option>
-			  		<option value="Staff">Staff</option>
-			  		<option value="Vacation">Vacation</option>
-		  		</select>
-		<input name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
-	    <input name="department" type="text" placeholder="Department">
-	    <input name="amount" type="number" step="0.01" placeholder="Allocation amount">
-	    <input name="first_name" type="text" placeholder="First Name">
-	    <input name="last_name" type="text" placeholder="Last Name">
-  		Jes: <select name="jes">
-		  		<option value="y">Yes</option>
-		  		<option value="n">No</option>
-		  		<option value="n/a"
-  			</select>
-	    Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-	    <input name="form_s" type="text" placeholder="Form S">
-	    <input name="duration" type="text" placeholder="Duration">
-	    <input name="supervisor" type="text" placeholder="Supervisor">
-	    <input name="student_id" type="text" placeholder="Student ID">
-	    <input name="fte" type="text" placeholder="FTE">
-	    <textarea name="notes" type="textarea" placeholder="Notes"></textarea>
-		<input id="allocationSubmit" type="submit" value="Search" name="search">
-		<input id="allocationAdd" type="submit" value="Add" name="add">
-	</form> -->
 
 		<form id="allocationFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
 			<input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 

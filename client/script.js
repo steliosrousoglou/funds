@@ -406,7 +406,10 @@
 			var col1 = row.insertCell(-1);
 			var col2 = row.insertCell(-1);
 			col1.innerHTML = key;
-			col2.innerHTML = jsonObj[key];
+			if ((key === "start_date" || key === "end_date" || key == "form_s" || key == "fes_due") && (jsonObj[key] != null && jsonObj[key].length >= 10)) {
+		    		col2.innerHTML = jsonObj[key].substring(0, 10);
+		    }
+		    else col2.innerHTML = jsonObj[key];
 		}
 		var leftRows = tableLeft.rows;
 		var rightRows = tableRight.rows;
@@ -521,14 +524,9 @@
 		console.log(formInputs);
 		for(var i = 0 ; i < formInputs.length ;i++) {
 	        var item = formInputs.item(i);
-	        // to weed out empty form inputs
-	        if (item.value.length < 1 || item.value == null) {
-	        	console.log("HERE");
-	        }
-	        else {
-	        	jsonUpdates[item.name] = item.value;
-	        	console.log(item.value);
-	        }
+	        if (item.name != "update" && item.name != "cancel") jsonUpdates[item.name] = item.value;
+	        console.log(item.value);
+	        
 	    }
 	    var obj = {};
 	    obj[0] = jsonUpdates;
