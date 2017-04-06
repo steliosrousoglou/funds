@@ -417,16 +417,32 @@
 		var rightRows = tableRight.rows;
 		createResultLinks(leftRows);
 		createResultLinks(rightRows);
-		var row = tableRight.insertRow(-1);
+		var row = tableLeft.insertRow(-1);
 		var col1 = row.insertCell(-1);
 		col1.innerHTML = "Update";
 		createUpdateClick(row, json);
+		var row2 = tableRight.insertRow(-1);
+		var col2 = row2.insertCell(-1);
+		col2.innerHTML = "Remove";
+		createRemoveClick(row2, json);
 	};
 	
 	function createUpdateClick(row, json) {
 		row.onclick = function (event) {
 			updateRender(json, event);
 		};
+	}
+	
+	function createRemoveClick(row, json) {
+		row.onclick = function (event) {
+			removeRender(json, event);
+		};
+	}
+	
+	function removeRender(json, event) {
+		//maybe pop up a confirmation warning first, then make a request to the endpoint
+		event.preventDefault();
+		console.log(queryType);
 	}
 	
 	function updateRender(json, event) {
