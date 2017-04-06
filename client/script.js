@@ -398,6 +398,8 @@
 		tableRight.innerHTML = "";
 		var jsonObj = JSON.parse(json);
 		var left = true;
+		console.log(json);
+		console.log(jsonObj);
 		for (var key in jsonObj) {
 			// console.log(key + jsonObj[key]);
 			var tableInsert = left? tableLeft: tableRight;
@@ -436,7 +438,6 @@
 	    var tableRight = document.getElementById("tableRight");
 		tableRight.innerHTML = "";
 		var updateForm = '', updateButton = '', cancelButton = '';
-		console.log(queryType);
 		switch (queryType) {
 			case (1):
 				updateForm = 'awardFormUpdate';
@@ -462,11 +463,9 @@
 		document.getElementById(updateForm).reset();
 		document.getElementById(updateForm).style.display = 'block';
 		console.log(json);
-		console.log(typeof(json));
 		var formFill = JSON.parse(json);
+		console.log(formFill);
 		var formElements = document.getElementById(updateForm).elements;
-		console.log(formElements);
-		console.log(typeof(formElements));
 		for (var i = 0; i < formElements.length; i++) {
 			var item = formElements.item(i);
 			console.log(item);
@@ -521,7 +520,6 @@
 		// var obj = JSON.parse(params);
 		// obj["split"] = "split";
 		var formInputs = document.getElementById(updateForm).elements;
-		console.log(formInputs);
 		for(var i = 0 ; i < formInputs.length ;i++) {
 	        var item = formInputs.item(i);
 	        if (item.name != "update" && item.name != "cancel") jsonUpdates[item.name] = item.value;
@@ -769,7 +767,6 @@
 		    jsonCell.innerHTML = JSON.stringify(jsonObj[i]);
 		    jsonCell.id = "jsonText";
 		    jsonCell.style.display="none";
-		    console.log(jsonObj[i]);
 		}
 		//set up the clickable links
 		var rows = table.rows;
