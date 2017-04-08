@@ -417,6 +417,7 @@
 		var rightRows = tableRight.rows;
 		createResultLinks(leftRows);
 		createResultLinks(rightRows);
+		if (!left) tableRight.insertRow(-1);
 		var row = tableLeft.insertRow(-1);
 		var col1 = row.insertCell(-1);
 		col1.innerHTML = "Update";
@@ -435,14 +436,53 @@
 	
 	function createRemoveClick(row, json) {
 		row.onclick = function (event) {
-			removeRender(json, event);
+			var confirmation = confirm("Delete this entry?");
+			if (confirmation) {
+			    removeReq(json, event);
+			}
 		};
 	}
 	
-	function removeRender(json, event) {
-		//maybe pop up a confirmation warning first, then make a request to the endpoint
+	function removeReq(json, event) {
 		event.preventDefault();
-		console.log(queryType);
+		var endpoint = '';
+		switch (queryType) {
+			case (1):
+				endpoint = '/remove_award';
+				break;
+			case (2):
+				endpoint = '/remove_allocation';
+				break;
+			case (3):
+				endpoint = '/remove_student';
+				break;
+			case (4):
+				endpoint = '/remove_collaborator';
+				break;
+		}
+		var nonNullObj = JSON.parse(json);
+		console.log(json);
+		for (key in nonNullObj) {
+			if (!nonNullObj[key] || nonNullObj[key] === "") delete nonNullObj[key];
+		}
+		console.log(JSON.stringify(nonNullObj));
+	    fetch(endpoint, {
+		    method:'POST',
+		    headers: {
+		      'Content-Type': 'application/json',
+		    },
+		    body: JSON.stringify(nonNullObj) })
+		    .then(res => res.text())
+				.then(text => {
+					 if (text === 'fail') alert('Failed to remove at ' + endpoint);
+					 //add function to maybe refresh the page echoing "succesful add"
+					 else if (text === 'success') {
+					 	alert("Removal was succesful");
+					 	clearAllForms();
+					 }
+					})
+		  .catch((e) => console.log());
+
 	}
 	
 	function updateRender(json, event) {
@@ -495,7 +535,13 @@
 		}
 		//any input into the form that is greater than null, will be updated
 		document.getElementById(updateButton).onclick = function () {
-			updateReq(json, updateForm);
+			//prevent sql error with null parameters
+			for (var key in formFill) {
+				if (!formFill[key] || formFill[key] === "") {
+					delete formFill[key];
+				}
+			}
+			updateReq(JSON.stringify(formFill), updateForm);
 		};
 		document.getElementById(cancelButton).onclick = function () {
 			document.getElementById(updateForm).reset();
@@ -509,14 +555,6 @@
 		// sending JSON stringified object array length 2
 		var jsonUpdates = {};
 		var jsonParams = JSON.parse(params);
-		// for (var key in jsonParams) {
-		// 	if (jsonParams[key] == null || jsonParams[key].length < 1) {
-	 //       	console.log("HERE");
-	 //       }
-	 //       else {
-	 //       	obj[key] = jsonParams[key];
-	 //       }
-		// }
 		var endpoint = '';
 		switch (queryType) {
 			case (1):
@@ -524,7 +562,7 @@
 				// obj["myfinance_award_number"] = jsonParams["myfinance_award_number"];
 				break;
 			case (2):
-				endpoint = '/update_project';
+				endpoint = '/update_allocation';
 				break;
 			case (3):
 				endpoint = '/update_student';

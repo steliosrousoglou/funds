@@ -6,6 +6,7 @@ const callUpdate = json => {
     return [json["0"], json["1"]];
 };
 
+
 /*
  * Takes in JSON object, returns a formatted string of
  * AND statements of all key-value pairs (for SQL search use)
