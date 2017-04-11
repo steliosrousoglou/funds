@@ -799,34 +799,48 @@
 		//create table, then create header table
 		var table = document.createElement("TABLE");
     	table.border = "1";
+    	table.setAttribute("class", "table table-hover");
+    	var tableHead = document.createElement("THEAD");
+    	tableHead.setAttribute("class", "thead-default");
     	var columns = jsonObj[0].length;
-    	var row = table.insertRow(-1); 
+    	var row = document.createElement("TR");
     	//headers of result table will be the keys of database
     	for (var key in jsonObj[0]) {
-    		var headerCell = row.insertCell(-1);
-	        headerCell.innerHTML = key;
+    		var headerCell = document.createElement("TH");
+    		var cellText = document.createTextNode(key);
+    		headerCell.appendChild(cellText);
+	        row.appendChild(headerCell);
     	}
+    	tableHead.appendChild(row);
+    	table.appendChild(tableHead);
+    	tableBody = document.createElement("TBODY");
     	//add the search data
 		for (var i = 0; i < jsonObj.length; i++){
-			row = table.insertRow(-1);
+			row = document.createElement("TR");
 		    var obj = jsonObj[i];
 		    for (var key in obj){
-		    	var cell = row.insertCell(-1);
+		    	var cell = document.createElement("TD");
+		    	var cellText;
 		    	if ((key === "start_date" || key === "end_date" || key == "form_s" || key == "fes_due") && (obj[key] != null && obj[key].length >= 10)) {
-		    		cell.innerHTML = obj[key].substring(0, 10);
+		    		cellText = document.createTextNode(obj[key].substring(0, 10));
 		    	}
-		    	else cell.innerHTML = obj[key];
+		    	else cellText = document.createTextNode(obj[key]);
+		    	cell.appendChild(cellText);
+		    	row.appendChild(cell);
 		    }
-		    var jsonCell = row.insertCell(-1);
+		    var jsonCell = document.createElement("TD");
 		    jsonCell.innerHTML = JSON.stringify(jsonObj[i]);
 		    jsonCell.id = "jsonText";
 		    jsonCell.style.display="none";
+		    row.appendChild(jsonCell);
+		    tableBody.appendChild(row);
 		}
 		//set up the clickable links
-		var rows = table.rows;
-		for (var i = 1; i < rows.length; i++) {
+		var rows = tableBody.rows;
+		for (var i = 0; i < rows.length; i++) {
 			createRowClick(rows[i], rows[i].cells["jsonText"].innerHTML);
 		}
+		table.appendChild(tableBody);
 		var resultTable = document.getElementById("resultTable");
 	    resultTable.innerHTML = "";
 	    resultTable.appendChild(table);

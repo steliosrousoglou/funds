@@ -4,15 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Studentship Database</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
+  
+  <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+  <link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
 	<!--Nav bar with 3 options for dropdown- later on add hidden fields for read only-->
 	
-<div class="navBar">
+<div class="navBar" >
 	<br>
 	<div class="menu">
 	<div class="dropdown">
@@ -53,11 +54,14 @@
 
 <hr>
 	
-	
-  <!--<script src="fetch.js"></script>-->
-  <script src="script.js"></script>
+
+    <script src="js/scripts.js"></script>
+	<script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 
   <br>
+  
+  <div class="formsGrid">
 	<!-- Various forms for sending json -->
 	<form id="awardFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
 		<div class="form-group">
@@ -183,322 +187,539 @@
 	    <button class="btn btn-primary" id="awardAdd" name="add" type="submit">Add</button>
 	</form>
 
-		<form id="allocationFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
-			<input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
-			<input name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
-			<input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-			<input name="department" type="text" placeholder="Department">
-			<input name="faculty" type="text" placeholder="Faculty/PI">
-			<input name="budget" type="number" step="0.01" placeholder="Budget">
-			Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-			End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-			<button id="allocationSearch" name="search" type="submit">Search</button>
-			<button id="showAllAllocation" name="showAll" type="submit">Show All</button>
-		</form>
-
-	<form id="allocationFormUpdate" name="allocationForm" method="post" enctype="multipart/form-data" style="display: none;">
-	    <input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
-      <input name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
-      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-      Allocation Type:<select name="allocation_type">
-            <option value='Studentship'>Studentship</option>
-            <option value="Fellowship">Fellowship</option>
-            <option value="Staff">Staff</option>
-            <option value="Vacation">Vacation</option>
-          </select>
-    <input name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
-      <input name="department" type="text" placeholder="Department">
-      <input name="faculty" type="text" placeholder="Faculty/PI">
-      <input name="budget" type="number" step="0.01" placeholder="Budget">
-      Jes: <select name="jes">
-          <option value="y">Yes</option>
-          <option value="n">No</option>
-        </select>
-      Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-      End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-      <input name="supervisor" type="text" placeholder="Supervisor">
-      <input name="fte" type="text" placeholder="FTE">
-      <textarea name="Notes" type="textarea" placeholder="Notes"></textarea>
-		<button id="allocationUpdate" name="update" type="submit">Update</button>
-		<button id="allocationCancel" name="cancel" type="submit">Cancel</button>
+	<form id="allocationFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Reference</label>
+				<input class="form-control" name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
+				<label>MyFinance Award Number</label>
+				<input class="form-control" name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+			</div>
+		</div> 
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Department</label>
+				<input class="form-control" name="department" type="text" placeholder="Department">
+				<label>Faculty</label>
+				<input class="form-control" name="faculty" type="text" placeholder="Faculty/PI">
+				<label>Budget</label>
+				<input class="form-control" name="budget" type="number" step="0.01" placeholder="Budget">
+			</div>
+		</div> 
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Start Date</label>
+		  		<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+		  		<label>End Date</label>
+		  		<input class="form-control" name="end_date" type="date" placeholder="End Date">
+			</div>
+		</div>
+		<button class="btn btn-primary" id="allocationSearch" name="search" type="submit">Search</button>
+		<button class="btn btn-default" id="showAllAllocation" name="showAll" type="submit">Show All</button>
 	</form>
 
- <form id="allocationFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
-      <input name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
-      <input name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
-      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-      Allocation Type:<select name="allocation_type">
-            <option value='Studentship'>Studentship</option>
-            <option value="Fellowship">Fellowship</option>
-            <option value="Staff">Staff</option>
-            <option value="Vacation">Vacation</option>
-          </select>
-    <input name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
-      <input name="department" type="text" placeholder="Department">
-      <input name="faculty" type="text" placeholder="Faculty/PI">
-      <input name="budget" type="number" step="0.01" placeholder="Budget">
-      Jes: <select name="jes">
-          <option value="y">Yes</option>
-          <option value="n">No</option>
-        </select>
-      Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-      End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-      <input name="supervisor" type="text" placeholder="Supervisor">
-      <input name="fte" type="text" placeholder="FTE">
-      <textarea name="Notes" type="textarea" placeholder="Notes"></textarea>
-      <button id="allocationAdd" name="add" type="submit">Add</button>
+	<form id="allocationFormUpdate" name="allocationForm" method="post" enctype="multipart/form-data" style="display: none;">
+	    <div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Reference</label>
+				<input class="form-control" name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
+				<label>MyFinance Award Number</label>
+				<input class="form-control" name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+			</div>
+		</div> 
+	 	<div class="form-group">
+	 		<div class="form-inline">
+	 			<label>Allocation Type:</label>
+	 			<!-- Maybe have default null value here? depending on if DB stores as enum or nah-->
+			 	<select class="custom-select" name="allocation_type">
+			        <option value='Studentship'>Studentship</option>
+			        <option value="Fellowship">Fellowship</option>
+			        <option value="Staff">Staff</option>
+			        <option value="Vacation">Vacation</option>
+			    </select>
+			    <label>EPSRC Voucher</label>
+				<input class="form-control" name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
+				<label>Department</label>
+				<input class="form-control" name="department" type="text" placeholder="Department">
+	 		</div>
+	 	</div>
+	 	<div class="form-group">
+	 		<div class="form-inline">
+			    <label>Faculty</label>
+				<input class="form-control" name="faculty" type="text" placeholder="Faculty/PI">
+				<label>Budget</label>
+				<input class="form-control" name="budget" type="number" step="0.01" placeholder="Budget">
+				<label>Jes:</label>
+	 			<!-- Maybe have default null value here? depending on if DB stores as enum or nah-->
+			 	<select class="custom-select" name="jes">
+			        <option value="y">Yes</option>
+	          		<option value="n">No</option>
+			    </select>
+	 		</div>
+	 	</div>
+	 	<div class="form-group">
+			<div class="form-inline">
+				<label>Start Date</label>
+		  		<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+		  		<label>End Date</label>
+		  		<input class="form-control" name="end_date" type="date" placeholder="End Date">
+		  		<label>Supervisor</label>
+		  		<input class="form-control" name="supervisor" type="text" placeholder="Supervisor">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>FTE</label>
+		  		<input class="form-control" name="fte" type="text" placeholder="FTE">
+		  		<label>Notes</label>
+		  		<textarea class="form-control" name="Notes" type="textarea" placeholder="Notes"></textarea>
+			</div>
+		</div>
+		<button class="btn btn-primary" id="allocationUpdate" name="update" type="submit">Update</button>
+		<button class="btn btn-default" id="allocationCancel" name="cancel" type="submit">Cancel</button>
+	</form>
+
+	<form id="allocationFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
+	 	<div class="form-group">
+			<div class="form-inline">
+				<label>Funding Body Reference</label>
+				<input class="form-control" name="funding_body_reference" type="text" placeholder="Funding Body Reference"> 
+				<label>MyFinance Award Number</label>
+				<input class="form-control" name="myfinance_award_number" type="number" placeholder="MyFinance Award Number">
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+			</div>
+		</div> 
+	 	<div class="form-group">
+	 		<div class="form-inline">
+	 			<label>Allocation Type:</label>
+	 			<!-- Maybe have default null value here? depending on if DB stores as enum or nah-->
+			 	<select class="custom-select" name="allocation_type">
+			        <option value='Studentship'>Studentship</option>
+			        <option value="Fellowship">Fellowship</option>
+			        <option value="Staff">Staff</option>
+			        <option value="Vacation">Vacation</option>
+			    </select>
+			    <label>EPSRC Voucher</label>
+				<input class="form-control" name="EPSRC_voucher" type="number" placeholder="EPSRC Voucher">
+				<label>Department</label>
+				<input class="form-control" name="department" type="text" placeholder="Department">
+	 		</div>
+	 	</div>
+	 	<div class="form-group">
+	 		<div class="form-inline">
+			    <label>Faculty</label>
+				<input class="form-control" name="faculty" type="text" placeholder="Faculty/PI">
+				<label>Budget</label>
+				<input class="form-control" name="budget" type="number" step="0.01" placeholder="Budget">
+				<label>Jes:</label>
+	 			<!-- Maybe have default null value here? depending on if DB stores as enum or nah-->
+			 	<select class="custom-select" name="jes">
+			        <option value="y">Yes</option>
+	          		<option value="n">No</option>
+			    </select>
+	 		</div>
+	 	</div>
+	 	<div class="form-group">
+			<div class="form-inline">
+				<label>Start Date</label>
+		  		<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+		  		<label>End Date</label>
+		  		<input class="form-control" name="end_date" type="date" placeholder="End Date">
+		  		<label>Supervisor</label>
+		  		<input class="form-control" name="supervisor" type="text" placeholder="Supervisor">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>FTE</label>
+		  		<input class="form-control" name="fte" type="text" placeholder="FTE">
+		  		<label>Notes</label>
+		  		<textarea class="form-control" name="Notes" type="textarea" placeholder="Notes"></textarea>
+			</div>
+		</div>
+		<button class="btn btn-primary" id="allocationAdd" name="add" type="submit">Add</button>
   </form>
 
-	<!-- <form id="studentForm" name="studentForm" method="post" enctype="multipart/form-data">
-	    <input name="first_name" type="text" placeholder="First Name"> 
-	    <input name="surname" type="text" placeholder="Surname">
-	    <input name="student_id" type="text" placeholder="Student ID">
-	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
-	    Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-		<input name="fte" type="text" placeholder="FTE">
-		<input name="form_s" type="text" placeholder="Form S">
-	    <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
-	    <input name="stipend" type="number" step="0.01" placeholder="Stipend">
-	    <input name="FEE" type="number" step="0.01" placeholder="FEE">
-	    <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
-		<input name="other" type="number" step="0.01" placeholder="Other">
-		OFA: <select name="ofa">
-		  		<option value="y">Yes</option>
-		  		<option value="n">No</option>
-		  		<option value="n/a">N/A</option>
-  			</select>
-		DSA: <select name="dsa">
-		  		<option value="y">Yes</option>
-		  		<option value="n">No</option>
-		  		<option value="n/a">N/A</option>
-			</select>
-		Internship: <select name="dsa">
-		  		<option value="y">Yes</option>
-		  		<option value="n">No</option>
-		  		<option value="n/a">N/A</option>
-			</select>
-	    Jes: <select name="jes">
-		  		<option value="y">Yes</option>
-		  		<option value="n">No</option>
-		  		<option value="n/a">N/A</option>
-  			</select>
-  		<input name="collaborator" type="text" placeholder="Collaborator">
-  		<input name="collab_code" type="text" placeholder="Collaborator Code">
-  		<input name="collab_amount" type="number" step="0.01" placeholder="Collab Amount">
-  		<textarea name="notes" type="textarea" placeholder="Notes"></textarea>
-	    <button id="studentSearch" name="search" type="submit">Search</button>
-	    <button id="studentAdd" name="add" type="submit">Add</button>
-	    <button id="showAllStudent" name="showAll" type="submit">Show All Students</button>
-	</form> -->
-
 	<form id="studentFormSearch" name="studentForm" method="post" enctype="multipart/form-data" style="display: none;">
-	    <input name="first_name" type="text" placeholder="First Name"> 
-      <input name="surname" type="text" placeholder="Surname">
-      <input name="student_id" type="text" placeholder="Student ID">
-      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-      Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-      End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-      <input name="fte" type="text" placeholder="FTE">
-      Form S:
-      <input name="form_s" type="date" placeholder="Form S">
-      <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
-      <input name="stipend" type="number" step="0.01" placeholder="Stipend">
-      <input name="fee" type="number" step="0.01" placeholder="FEE">
-      <input name="other" type="number" step="0.01" placeholder="Other">
-      OFA: <select name="ofa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      DSA: <select name="dsa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      Internship: <select name="dsa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      Jes: <select name="jes">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      <textarea name="Notes" type="textarea" placeholder="Notes"></textarea>
-	    <button id="studentSearch" name="search" type="submit">Search</button>
-	    <button id="showAllStudent" name="showAll" type="submit">Show All Students</button>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>First Name</label>
+				<input class="form-control" name="first_name" type="text" placeholder="First Name"> 
+				<label>Surname</label>
+				<input class="form-control" name="surname" type="text" placeholder="Surname">
+				<label>Student ID</label>
+				<input class="form-control" name="student_id" type="text" placeholder="Student ID">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+				<label>Start Date</label>
+				<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+				<label>End Date</label>
+				<input class="form-control" name="end_date" type="date" placeholder="End Date">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>FTE</label>
+				<input class="form-control" name="fte" type="text" placeholder="FTE">
+				<label>Form S</label>
+				<input class="form-control" name="form_s" type="date" placeholder="Form S">
+				<label>Amount</label>
+				<input class="form-control" name="amount" type="number" step="0.01" placeholder="Funding Amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Stipend</label>
+				<input class="form-control" name="stipend" type="number" step="0.01" placeholder="Stipend">
+				<label>Fee</label>
+				<input class="form-control" name="fee" type="number" step="0.01" placeholder="FEE">
+				<label>Other</label>
+				<input class="form-control" name="other" type="number" step="0.01" placeholder="Other">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>OFA:</label>
+				<select class="custom-select" name="ofa">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+				<label>DSA:</label>
+				<select class="custom-select" name="dsa">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+				<label>Internship:</label>
+				<select class="custom-select" name="internship">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Jes:</label>
+				<select class="custom-select" name="jes">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+		  		<label>Notes</label>
+		  		<textarea class="form-control" name="Notes" type="textarea" placeholder="Notes"></textarea>
+			</div>
+		</div>
+	    <button class="btn btn-primary" id="studentSearch" name="search" type="submit">Search</button>
+	    <button class="btn btn-default" id="showAllStudent" name="showAll" type="submit">Show All Students</button>
 	</form>
 
 	<form id="studentFormUpdate" name="studentForm" method="post" enctype="multipart/form-data" style="display: none;">
-	    <input name="first_name" type="text" placeholder="First Name"> 
-      <input name="surname" type="text" placeholder="Surname">
-      <input name="student_id" type="text" placeholder="Student ID">
-      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-      Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-      End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-      <input name="fte" type="text" placeholder="FTE">
-      Form S:
-      <input name="form_s" type="date" placeholder="Form S">
-      <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
-      <input name="stipend" type="number" step="0.01" placeholder="Stipend">
-      <input name="fee" type="number" step="0.01" placeholder="FEE">
-      <input name="other" type="number" step="0.01" placeholder="Other">
-      Fees Only: <select name="fees_only">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      OFA: <select name="ofa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      DSA: <select name="dsa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      Internship: <select name="dsa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      Jes: <select name="jes">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      <input name="collaborator" type="text" placeholder="Collaborator">
-      <input name="collaborator_code" type="text" placeholder="Collaborator Code">
-      <input name="collaborator_amount" type="number" step="0.01" placeholder="Collaborator Amount">
-      <textarea name="Notes" type="textarea" placeholder="Notes"></textarea>
-	    <button id="studentUpdate" name="update" type="submit">Update</button>
-	    <button id="studentCancel" name="cancel" type="submit">Cancel</button>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>First Name</label>
+				<input class="form-control" name="first_name" type="text" placeholder="First Name"> 
+				<label>Surname</label>
+				<input class="form-control" name="surname" type="text" placeholder="Surname">
+				<label>Student ID</label>
+				<input class="form-control" name="student_id" type="text" placeholder="Student ID">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+				<label>Start Date</label>
+				<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+				<label>End Date</label>
+				<input class="form-control" name="end_date" type="date" placeholder="End Date">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>FTE</label>
+				<input class="form-control" name="fte" type="text" placeholder="FTE">
+				<label>Form S</label>
+				<input class="form-control" name="form_s" type="date" placeholder="Form S">
+				<label>Amount</label>
+				<input class="form-control" name="amount" type="number" step="0.01" placeholder="Funding Amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Stipend</label>
+				<input class="form-control" name="stipend" type="number" step="0.01" placeholder="Stipend">
+				<label>Fee</label>
+				<input class="form-control" name="fee" type="number" step="0.01" placeholder="FEE">
+				<label>Other</label>
+				<input class="form-control" name="other" type="number" step="0.01" placeholder="Other">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>OFA:</label>
+				<select class="custom-select" name="ofa">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+				<label>DSA:</label>
+				<select class="custom-select" name="dsa">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+				<label>Internship:</label>
+				<select class="custom-select" name="internship">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Jes:</label>
+				<select class="custom-select" name="jes">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+		  		<label>Notes</label>
+		  		<textarea class="form-control" name="Notes" type="textarea" placeholder="Notes"></textarea>
+				<label>Fees Only:</label>
+				<select class="custom-select" name="fees_only">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Collaborator</label>
+				<input class="form-control" name="collaborator" type="text" placeholder="Collaborator">
+				<label>Collaborator Code</label>
+				<input class="form-control" name="collaborator_code" type="text" placeholder="Collaborator Code">
+				<label>Collaborator Amount</label>
+				<input class="form-control" name="collaborator_amount" type="number" step="0.01" placeholder="Collaborator Amount">
+			</div>
+		</div>
+	    <button class="btn btn-primary" id="studentUpdate" name="update" type="submit">Update</button>
+	    <button class="btn btn-default" id="studentCancel" name="cancel" type="submit">Cancel</button>
 	</form>
 
 	<form id="studentFormAdd" name="studentForm" method="post" enctype="multipart/form-data" style="display: none;">
-	    <input name="first_name" type="text" placeholder="First Name"> 
-      <input name="surname" type="text" placeholder="Surname">
-      <input name="student_id" type="text" placeholder="Student ID">
-      <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-      Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-      End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-      <input name="fte" type="text" placeholder="FTE">
-      Form S:
-      <input name="form_s" type="date" placeholder="Form S">
-      <input name="amount" type="number" step="0.01" placeholder="Funding Amount">
-      <input name="stipend" type="number" step="0.01" placeholder="Stipend">
-      <input name="fee" type="number" step="0.01" placeholder="FEE">
-      <input name="other" type="number" step="0.01" placeholder="Other">
-      Fees Only: <select name="fees_only">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      OFA: <select name="ofa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      DSA: <select name="dsa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      Internship: <select name="dsa">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      Jes: <select name="jes">
-      <option value="y">Yes</option>
-      <option value="n">No</option>
-      <option value="n/a">N/A</option>
-      </select>
-      <input name="collaborator" type="text" placeholder="Collaborator">
-      <input name="collaborator_code" type="text" placeholder="Collaborator Code">
-      <input name="collaborator_amount" type="number" step="0.01" placeholder="Collaborator Amount">
-      <textarea name="Notes" type="textarea" placeholder="Notes"></textarea>
-      <button id="studentAdd" name="add" type="submit">Add</button>
+	    <div class="form-group">
+			<div class="form-inline">
+				<label>First Name</label>
+				<input class="form-control" name="first_name" type="text" placeholder="First Name"> 
+				<label>Surname</label>
+				<input class="form-control" name="surname" type="text" placeholder="Surname">
+				<label>Student ID</label>
+				<input class="form-control" name="student_id" type="text" placeholder="Student ID">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+				<label>Start Date</label>
+				<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+				<label>End Date</label>
+				<input class="form-control" name="end_date" type="date" placeholder="End Date">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>FTE</label>
+				<input class="form-control" name="fte" type="text" placeholder="FTE">
+				<label>Form S</label>
+				<input class="form-control" name="form_s" type="date" placeholder="Form S">
+				<label>Amount</label>
+				<input class="form-control" name="amount" type="number" step="0.01" placeholder="Funding Amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Stipend</label>
+				<input class="form-control" name="stipend" type="number" step="0.01" placeholder="Stipend">
+				<label>Fee</label>
+				<input class="form-control" name="fee" type="number" step="0.01" placeholder="FEE">
+				<label>Other</label>
+				<input class="form-control" name="other" type="number" step="0.01" placeholder="Other">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>OFA:</label>
+				<select class="custom-select" name="ofa">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+				<label>DSA:</label>
+				<select class="custom-select" name="dsa">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+				<label>Internship:</label>
+				<select class="custom-select" name="internship">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Jes:</label>
+				<select class="custom-select" name="jes">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+		  		<label>Notes</label>
+		  		<textarea class="form-control" name="Notes" type="textarea" placeholder="Notes"></textarea>
+				<label>Fees Only:</label>
+				<select class="custom-select" name="fees_only">
+					<option value="y">Yes</option>
+					<option value="n">No</option>
+					<option value="n/a">N/A</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Collaborator</label>
+				<input class="form-control" name="collaborator" type="text" placeholder="Collaborator">
+				<label>Collaborator Code</label>
+				<input class="form-control" name="collaborator_code" type="text" placeholder="Collaborator Code">
+				<label>Collaborator Amount</label>
+				<input class="form-control" name="collaborator_amount" type="number" step="0.01" placeholder="Collaborator Amount">
+			</div>
+		</div>
+		<button class="btn btn-primary" id="studentAdd" name="add" type="submit">Add</button>
 	</form>
 	
-
-	<!-- <form id="collaborationForm" name="collaborationForm" method="post" enctype="multipart/form-data">
-	    <input name="collaborator" type="text" placeholder="Collaborator Name"> 
-	    <input name="my_finance_code" type="number" placeholder="MyFinance/Project Code">
-	    <input name="award_amount" type="number" step="0.01" placeholder="Award amount">
-	    Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-		<input id="collaborationSubmit" type="submit" value="Submit" name="submit">
-	</form> -->
-	
-		<form id="collaboratorFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
-	    <input name="collaborator_name" type="text" placeholder="Collaborator Name"> 
-	    <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-	    <input name="amount" type="number" step="0.01" placeholder="Award amount">
-	    <input name="first_name" type="text" placeholder="Student First Name">
-	    <input name="surname" type="text" placeholder="Student Last Name">
-	    Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-	    <input name="student_id" type="text" placeholder="Student ID">
-	    <input name="supervisor" type="text" placeholder="Supervisor">
-	    <button id="collaboratorSearch" name="search" type="submit">Search</button>
-	    <button id="showAllCollaborator" name="showAll" type="submit">Show All</button>
+	<form id="collaboratorFormSearch" method="post" enctype="multipart/form-data" style="display: none;">
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Collaborator Name</label>
+				<input class="form-control" name="collaborator_name" type="text" placeholder="Collaborator Name"> 
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+				<label>Amount</label>
+				<input class="form-control" name="amount" type="number" step="0.01" placeholder="Award amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>First Name</label>
+				<input class="form-control" name="first_name" type="text" placeholder="Student First Name"> 
+				<label>Surname</label>
+				<input class="form-control" name="surname" type="text" placeholder="Student Last Name">
+				<label>Amount</label>
+				<input class="form-control" name="student_id" type="text" placeholder="Student ID">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Start Date</label>
+				<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+				<label>End Date</label>
+				<input class="form-control" name="end_date" type="date" placeholder="End Date">
+				<label>Supervisor</label>
+				<input class="form-control" name="supervisor" type="text" placeholder="Supervisor">
+			</div>
+		</div>
+	    <button class="btn btn-primary" id="collaboratorSearch" name="search" type="submit">Search</button>
+	    <button class="btn btn-default" id="showAllCollaborator" name="showAll" type="submit">Show All</button>
 	</form>
 
 	<form id="collaboratorFormAdd" method="post" enctype="multipart/form-data" style="display: none;">
-	    <input name="collaborator_name" type="text" placeholder="Collaborator Name"> 
-	    <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-	    <input name="amount" type="number" step="0.01" placeholder="Award amount">
-	    <input name="first_name" type="text" placeholder="Student First Name">
-	    <input name="surname" type="text" placeholder="Student Last Name">
-	    Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-	    <input name="student_id" type="text" placeholder="Student ID">
-	    <input name="supervisor" type="text" placeholder="Supervisor">
-	    <textarea name="Notes" type="textarea" placeholder="Notes"></textarea>
-	    <button id="collaboratorAdd" name="add" type="submit">Add</button>
+	    <div class="form-group">
+			<div class="form-inline">
+				<label>Collaborator Name</label>
+				<input class="form-control" name="collaborator_name" type="text" placeholder="Collaborator Name"> 
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+				<label>Amount</label>
+				<input class="form-control" name="amount" type="number" step="0.01" placeholder="Award amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>First Name</label>
+				<input class="form-control" name="first_name" type="text" placeholder="Student First Name"> 
+				<label>Surname</label>
+				<input class="form-control" name="surname" type="text" placeholder="Student Last Name">
+				<label>Amount</label>
+				<input class="form-control" name="student_id" type="text" placeholder="Student ID">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Start Date</label>
+				<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+				<label>End Date</label>
+				<input class="form-control" name="end_date" type="date" placeholder="End Date">
+				<label>Supervisor</label>
+				<input class="form-control" name="supervisor" type="text" placeholder="Supervisor">
+				<label>Notes</label>
+				<textarea class="form-control" name="Notes" type="textarea" placeholder="Notes"></textarea>
+			</div>
+		</div>
+	    <button class="btn btn-primary" id="collaboratorAdd" name="add" type="submit">Add</button>
 	</form>
 
 	<form id="collaboratorFormUpdate" method="post" enctype="multipart/form-data" style="display: none;">
-	    <input name="collaborator_name" type="text" placeholder="Collaborator Name"> 
-	    <input name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
-	    <input name="amount" type="number" step="0.01" placeholder="Award amount">
-	    <input name="first_name" type="text" placeholder="Student First Name">
-	    <input name="surname" type="text" placeholder="Student Last Name">
-	    Start Date:
-      <input name="start_date" type="date" placeholder="Start Date">
-	    End Date:
-      <input name="end_date" type="date" placeholder="End Date">
-	    <input name="student_id" type="text" placeholder="Student ID">
-	    <input name="supervisor" type="text" placeholder="Supervisor">
-	    <textarea name="Notes" type="textarea" placeholder="Notes"></textarea>
-	    <button id="collaboratorUpdate" name="update" type="submit">Update</button>
-	    <button id="collaboratorCancel" name="cancel" type="submit">Cancel</button>
+	    <div class="form-group">
+			<div class="form-inline">
+				<label>Collaborator Name</label>
+				<input class="form-control" name="collaborator_name" type="text" placeholder="Collaborator Name"> 
+				<label>MyFinance Code</label>
+				<input class="form-control" name="myfinance_code" type="number" placeholder="MyFinance/Project Code">
+				<label>Amount</label>
+				<input class="form-control" name="amount" type="number" step="0.01" placeholder="Award amount">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>First Name</label>
+				<input class="form-control" name="first_name" type="text" placeholder="Student First Name"> 
+				<label>Surname</label>
+				<input class="form-control" name="surname" type="text" placeholder="Student Last Name">
+				<label>Amount</label>
+				<input class="form-control" name="student_id" type="text" placeholder="Student ID">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="form-inline">
+				<label>Start Date</label>
+				<input class="form-control" name="start_date" type="date" placeholder="Start Date">
+				<label>End Date</label>
+				<input class="form-control" name="end_date" type="date" placeholder="End Date">
+				<label>Supervisor</label>
+				<input class="form-control" name="supervisor" type="text" placeholder="Supervisor">
+				<label>Notes</label>
+				<textarea class="form-control" name="Notes" type="textarea" placeholder="Notes"></textarea>
+			</div>
+		</div>
+	    <button class="btn btn-primary" id="collaboratorUpdate" name="update" type="submit">Update</button>
+	    <button class="btn btn-default" id="collaboratorCancel" name="cancel" type="submit">Cancel</button>
 	</form>
-</body>
 	
 	<div class="container-fluid" id="descriptionList">
 	<div class="row">
@@ -568,12 +789,10 @@
 	</div>
 </div>
 	<br>
-	<div id="resultTable"></div>
-
-	<script src="fetch.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/scripts.js"></script>
-	
+	<div id="resultTable" style="overflow-y:auto;overflow-x:auto; display:block;border-style: solid; border-width: 3px">
+		
+	</div>
+		</div>
+</body>
 
 </html>
