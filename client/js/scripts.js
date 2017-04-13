@@ -1,5 +1,6 @@
 	//used to denote which query is currently being handled, toggles as links between queries are clicked, resets when all forms are cleared
 	var queryType = 0;
+	var allAccessRights = 1;
 
 	function clearAllForms() {
 	    document.getElementById("awardFormSearch").style.display="none";
@@ -102,7 +103,12 @@
   		collaboratorShowAll.addEventListener("click", collaboratorFormReq, false);
   		collaboratorShowAll.req = 2;
   		
-  		userRights();
+  		var readWrite = document.getElementById("readWrite");
+  		var readOnly = document.getElementById("readOnly");
+  		
+  		readWrite.addEventListener("click", allRights, false);
+  		readOnly.addEventListener("click", limitedRights, false);
+  		
 	}
 	
 	function findPos(obj) {
@@ -115,8 +121,33 @@
     	}
 	}
 	
-	function userRights() {
-	    //assign a toggle button that checks and on click
+	function allRights(evt) {
+		if (allAccessRights != 1) {
+			allAccessRights = 1;
+			document.getElementById("awardBtnAdd").style.display = "block";
+			document.getElementById("allocationBtnAdd").style.display = "block";
+			document.getElementById("studentBtnAdd").style.display = "block";
+			document.getElementById("collaboratorBtnAdd").style.display = "block";
+		}
+	}
+	
+	function limitedRights(evt) {
+		console.log("trying to restrict");
+		if (allAccessRights != 0) {
+			allAccessRights = 0;
+			document.getElementById("awardBtnAdd").style.display = "none";
+			document.getElementById("allocationBtnAdd").style.display = "none";
+			document.getElementById("studentBtnAdd").style.display = "none";
+			document.getElementById("collaboratorBtnAdd").style.display = "none";
+		    document.getElementById("awardFormUpdate").style.display="none";
+		    document.getElementById("awardFormAdd").style.display="none";
+	  		document.getElementById("allocationFormUpdate").style.display="none";
+	  		document.getElementById("allocationFormAdd").style.display="none";
+	  		document.getElementById("studentFormUpdate").style.display="none";
+	  		document.getElementById("studentFormAdd").style.display="none";
+	  		document.getElementById("collaboratorFormUpdate").style.display="none";
+	  		document.getElementById("collaboratorFormAdd").style.display="none";
+		}
 	}
 	
 	//cancel prevent default
@@ -125,45 +156,51 @@
 	}
 		
 	//For Award search, provide a show all awards list, with hyperlinks that bring up a specific award view
-	function studentFormReq (evt) {
-		evt.preventDefault();
-		queryType = 3;
-		var endpoint = '';
-		var formInputs;
-		switch (evt.target.req) {
+	function serverRequest(type, request, form) {
+		console.log("request for " + type);
+		var endpointVar;
+		switch (type) {
 			case 0:
-				formInputs = document.getElementById("studentFormSearch").elements;
-				endpoint = '/get_student';
+				endpointVar = "award";
 				break;
 			case 1:
-				formInputs = document.getElementById("studentFormAdd").elements;
-				endpoint = '/add_student';
+				endpointVar = "allocation";
 				break;
 			case 2:
-				formInputs = document.getElementById("studentFormSearch").elements;
-				endpoint = '/get_all_students';
+				endpointVar = "student";
+				break;
+			case 3: 
+				endpointVar = "collaborator";
+				break;
+		}
+		var endpoint;
+		switch (request) {
+			case 0:
+				endpoint = "/get_" + endpointVar;
+				break;
+			case 1:
+				endpoint = "/add_" + endpointVar;
+				break;
+			case 2:
+				endpoint = "/get_all_" + endpointVar + "s";
 				break;
 		}
 		var obj = {};
+		var formInputs = document.getElementById(form).elements;
 		console.log(formInputs);
-		var invalid = false;
 		for(var i = 0 ; i < formInputs.length ;i++) {
 	        var item = formInputs.item(i);
-	        // to weed out empty form inputs
-	        if (item.value.length <= 1) {
-	        	invalid = true;
-	        	console.log("HERE");
-	        }
-	        else {
-	          obj[item.name] = item.value;
-	          console.log(item.value);
+	        if (item.value.length > 1) {
+	        	obj[item.name] = item.value;
+	        	console.log(item.value);
 	        }
 	    }
 	    console.log(obj);
 	    var jsonObj = JSON.stringify(obj);
-	    //try catch here maybe?
 	    console.log(jsonObj);
-	    if (evt.target.req == 1) {
+	    //add request
+	    console.log(endpoint);
+	    if (request == 1) {
 	    	fetch(endpoint, {
 			    method:'POST',
 			    headers: {
@@ -172,10 +209,9 @@
 			    body: jsonObj })
 			    .then(res => res.text())
 				.then(text => {
-					 if (text === 'fail') alert('Failed to add student');
-					 //add function to maybe refresh the page echoing "succesful add"
+					 if (text === 'fail') alert('Failed to add ' + endpointVar);
 					 else if (text === 'success') {
-					 	alert ("Student Successfully Added");
+					 	alert (endpointVar +" Successfully Added");
 					 	clearAllForms();
 					 }
 					})
@@ -193,219 +229,77 @@
 			  .catch((e) => console.log(e));
 	    }
 	};
-
+	
+	function awardFormReq (evt) {
+		evt.preventDefault();
+		queryType = 1;
+		var form = '';
+		switch (evt.target.req) {
+			case 0:
+				form = "awardFormSearch";
+				break;
+			case 1:
+				form = "awardFormAdd";
+				break;
+			case 2:
+				form = "awardFormSearch";
+				break;
+		}
+		serverRequest(0, evt.target.req, form);
+	};
 	
 	function allocationFormReq (evt) {
 		evt.preventDefault();
 		queryType = 2;
-		var endpoint = '';
-		var formInputs;
+		var form = '';
 		switch (evt.target.req) {
 			case 0:
-				formInputs = document.getElementById("allocationFormSearch").elements;
-				endpoint = '/get_allocation';
+				form = "allocationFormSearch";
 				break;
 			case 1:
-				formInputs = document.getElementById("allocationFormAdd").elements;
-				endpoint = '/add_allocation';
+				form = "allocationFormAdd";
 				break;
 			case 2:
-				formInputs = document.getElementById("allocationFormSearch").elements;
-				endpoint = '/get_all_allocations';
+				form = "allocationFormSearch";
 				break;
 		}
-		var obj = {};
-		console.log(formInputs);
-		var invalid = false;
-		for(var i = 0 ; i < formInputs.length ;i++) {
-	        var item = formInputs.item(i);
-	        // to weed out empty form inputs
-	        if (item.value.length <= 1) {
-	        	invalid = true;
-	        	console.log("HERE");
-	        }
-	        else {
-	          obj[item.name] = item.value;
-	          console.log(item.value);
-	        }
-	    }
-	    console.log(obj);
-	    var jsonObj = JSON.stringify(obj);
-	    //try catch here maybe?
-	    console.log(jsonObj);
-	    // var body = evt.target.dbReq == 2? "" : body;
-	    console.log(endpoint);
-	    if (evt.target.req == 1) {
-	    	fetch(endpoint, {
-			    method:'POST',
-			    headers: {
-			      'Content-Type': 'application/json',
-			    },
-			    body: jsonObj })
-			    .then(res => res.text())
-				.then(text => {
-					 if (text === 'fail') alert('Failed to add allocation');
-					 //add function to maybe refresh the page echoing "succesful add"
-					 else if (text === 'success') {
-					 	alert ("Allocation Successfully Added");
-					 	clearAllForms();
-					 }
-					})
-			  .catch((e) => console.log(e));
-	    }
-	    else {
-	    	fetch(endpoint, {
-			    method:'POST',
-			    headers: {
-			      'Content-Type': 'application/json',
-			    },
-			    body: jsonObj })
-			    .then(res => res.json())
-			    .then(res => renderResults(res))
-			  .catch((e) => console.log(e));
-	    }
-		
+		serverRequest(1, evt.target.req, form);
+	};
+	
+	function studentFormReq (evt) {
+		evt.preventDefault();
+		queryType = 3;
+		var form = '';
+		switch (evt.target.req) {
+			case 0:
+				form = "studentFormSearch";
+				break;
+			case 1:
+				form = "studentFormAdd";
+				break;
+			case 2:
+				form = "studentFormSearch";
+				break;
+		}
+		serverRequest(2, evt.target.req, form);
 	};
 	
 	function collaboratorFormReq (evt) {
 		evt.preventDefault();
 		queryType = 4;
-		var endpoint = '';
-		var formInputs;
+		var form = '';
 		switch (evt.target.req) {
 			case 0:
-				formInputs = document.getElementById("collaboratorFormSearch").elements;
-				endpoint = '/get_collaborator';
+				form = "collaboratorFormSearch";
 				break;
 			case 1:
-				formInputs = document.getElementById("collaboratorFormAdd").elements;
-				endpoint = '/add_collaborator';
+				form = "collaboratorFormAdd";
 				break;
 			case 2:
-				formInputs = document.getElementById("collaboratorFormSearch").elements;
-				endpoint = '/get_all_collaborators';
+				form = "collaboratorFormSearch";
 				break;
 		}
-		var obj = {};
-		console.log(formInputs);
-		var invalid = false;
-		for(var i = 0 ; i < formInputs.length ;i++) {
-	        var item = formInputs.item(i);
-	        // to weed out empty form inputs
-	        if (item.value.length <= 1) {
-	        	invalid = true;
-	        	console.log("HERE");
-	        }
-	        else {
-	          obj[item.name] = item.value;
-	          console.log(item.value);
-	        }
-	    }
-	    console.log(obj);
-	    var jsonObj = JSON.stringify(obj);
-	    //try catch here maybe?
-	    console.log(jsonObj);
-	    // var body = evt.target.dbReq == 2? "" : body;
-	    console.log(endpoint);
-	    if (evt.target.req == 1) {
-	    	fetch(endpoint, {
-			    method:'POST',
-			    headers: {
-			      'Content-Type': 'application/json',
-			    },
-			    body: jsonObj })
-			    .then(res => res.text())
-				.then(text => {
-					 if (text === 'fail') alert('Failed to add collaborator');
-					 //add function to maybe refresh the page echoing "succesful add"
-					 else if (text === 'success') {
-					 	alert ("Collaborator Successfully Added");
-					 	clearAllForms();
-					 }
-					})
-			  .catch((e) => console.log(e));
-	    }
-	    else {
-	    	fetch(endpoint, {
-			    method:'POST',
-			    headers: {
-			      'Content-Type': 'application/json',
-			    },
-			    body: jsonObj })
-			    .then(res => res.json())
-			    .then(res => renderResults(res))
-			  .catch((e) => console.log(e));
-	    }
-	};
-
-	function awardFormReq (evt) {
-		evt.preventDefault();
-		queryType = 1;
-		var endpoint = '';
-		var formInputs;
-		switch (evt.target.req) {
-			case 0:
-				formInputs = document.getElementById("awardFormSearch").elements;
-				endpoint = '/get_award';
-				break;
-			case 1:
-				formInputs = document.getElementById("awardFormAdd").elements;
-				endpoint = '/add_award';
-				break;
-			case 2:
-				formInputs = document.getElementById("awardFormSearch").elements;
-				endpoint = '/get_all_awards';
-				break;
-		}
-		var obj = {};
-		console.log(formInputs);
-		var invalid = false;
-		for(var i = 0 ; i < formInputs.length ;i++) {
-	        var item = formInputs.item(i);
-	        // to weed out empty form inputs
-	        if (item.value.length <= 1) {
-	        	invalid = true;
-	        	console.log("HERE");
-	        }
-	        else {
-	          obj[item.name] = item.value;
-	          console.log(item.value);
-	        }
-	    }
-	    console.log(obj);
-	    var jsonObj = JSON.stringify(obj);
-	    //try catch here maybe?
-	    console.log(jsonObj);
-	    //this is add, special request
-	    if (evt.target.req == 1) {
-	    	fetch(endpoint, {
-			    method:'POST',
-			    headers: {
-			      'Content-Type': 'application/json',
-			    },
-			    body: jsonObj })
-			    .then(res => res.text())
-				.then(text => {
-					 if (text === 'fail') alert('Failed to add award');
-					 //add function to maybe refresh the page echoing "succesful add"
-					 else if (text === 'success') {
-					 	alert ("Award Successfully Added");
-					 	clearAllForms();
-					 }
-					})
-			  .catch((e) => console.log(e));
-	    }
-	    else {
-	    	fetch(endpoint, {
-			    method:'POST',
-			    headers: {
-			      'Content-Type': 'application/json',
-			    },
-			    body: jsonObj })
-			    .then(res => res.json())
-			    .then(res => renderResults(res))
-			  .catch((e) => console.log(e));
-	    }
+		serverRequest(3, evt.target.req, form);
 	};
 	
 	function detailedResult (json) {
@@ -420,7 +314,7 @@
 		for (var key in jsonObj) {
 			// console.log(key + jsonObj[key]);
 			var tableInsert = left? tableLeft: tableRight;
-			left = left? false : true;
+			left = left == true? false : true;
 			var row = tableInsert.insertRow(-1);
 			var col1 = row.insertCell(-1);
 			var col2 = row.insertCell(-1);
@@ -434,15 +328,17 @@
 		var rightRows = tableRight.rows;
 		createResultLinks(leftRows);
 		createResultLinks(rightRows);
-		if (!left) tableRight.insertRow(-1);
-		var row = tableLeft.insertRow(-1);
-		var col1 = row.insertCell(-1);
-		col1.innerHTML = "Update";
-		createUpdateClick(row, json);
-		var row2 = tableRight.insertRow(-1);
-		var col2 = row2.insertCell(-1);
-		col2.innerHTML = "Remove";
-		createRemoveClick(row2, json);
+		if (allAccessRights == 1) {
+			if (!left) tableRight.insertRow(-1).insertCell(-1);
+			var row = tableLeft.insertRow(-1);
+			var col1 = row.insertCell(-1);
+			col1.innerHTML = "Update";
+			createUpdateClick(row, json);
+			var row2 = tableRight.insertRow(-1);
+			var col2 = row2.insertCell(-1);
+			col2.innerHTML = "Remove";
+			createRemoveClick(row2, json);
+		}
 		window.scroll(0, tableLeft);
 	};
 	
@@ -480,7 +376,7 @@
 		}
 		var nonNullObj = JSON.parse(json);
 		console.log(json);
-		for (key in nonNullObj) {
+		for (var key in nonNullObj) {
 			if (!nonNullObj[key] || nonNullObj[key] === "") delete nonNullObj[key];
 		}
 		console.log(JSON.stringify(nonNullObj));
@@ -566,6 +462,7 @@
 			document.getElementById(updateForm).style.display = 'none';
 			detailedResult(json);
 		};
+		window.scroll(0, updateForm);
 	}
 	
 	function updateReq(params, updateForm) {
@@ -738,13 +635,6 @@
 		    body: jsonObj })
 		    .then(res => res.json())
 		    .then (res => renderResults(res))
-		    //it is still catching an error?
-		    // .then(res => console.log(res))
-		  //   .then(res => {
-		  //     if (res === 'fail') alert("Award Query Failed");
-		  //     else JSON.parse(res.text())
-		  //     })
-		  // .then(res => console.log(res)) // Pass json to a results displaying function
 		  .catch((e) => console.log(e));
 	}
 	
@@ -786,15 +676,6 @@
 		  .catch((e) => console.log(e));
 	}
 	
-	// award -> allocation search by myFinance award no and FundingBody reference
-	// award -> student search by myFinance project code
-	
-	// allocation->award search by myFinance award no
-	// allocation->student search by myFinance project code
-	
-	// student can only get to allocation
-	// 	via search by myFinance project code
-	
 	function createRowClick(row, text) {
 		row.onclick = function () {
 			detailedResult(text);
@@ -811,8 +692,8 @@
 		console.log("rendering");
 		console.log(jsonObj);
 		if (jsonObj.length == 0) {
-			console.log("No results returned.");
-			return;
+			alert("No results returned.");
+			clearAllForms();
 		}
 		//create table, then create header table
 		var table = document.createElement("TABLE");
@@ -890,6 +771,7 @@
         	    document.getElementById("awardFormAdd").style.display="block";
         	    break; 
 	    }
+	    if (allAccessRights == 0) document.getElementById("awardFormAdd").style.display="none";
 	}
 	
 	
@@ -916,6 +798,7 @@ function renderAllocationForm(a) {
         	    document.getElementById("allocationFormAdd").style.display="block";
         	    break; 
 	    }
+	    if (allAccessRights == 0) document.getElementById("allocationFormAdd").style.display="none";
 	}
 
 function renderStudentForm(a) {
@@ -941,6 +824,7 @@ function renderStudentForm(a) {
         	    document.getElementById("studentFormAdd").style.display="block";
         	    break; 
 	    }
+	    if (allAccessRights == 0) document.getElementById("studentFormAdd").style.display="none";
 	}
 
 function renderCollaboratorForm(a) {
@@ -966,36 +850,5 @@ function renderCollaboratorForm(a) {
         	    document.getElementById("collaboratorFormAdd").style.display="block";
         	    break; 
 	    }
-	}
-
-	
-
-	function renderForm(a) {
-		switch (a) {
-			case 0:
-				document.getElementById("awardForm").style.display="block";
-				document.getElementById("allocationForm").style.display="none";
-				document.getElementById("studentForm").style.display="none";
-			    document.getElementById("collaborationForm").style.display="none";
-			    break;
-			case 1:
-				document.getElementById("awardForm").style.display="none";
-				document.getElementById("allocationForm").style.display="block";
-				document.getElementById("studentForm").style.display="none";
-			    document.getElementById("collaborationForm").style.display="none";
-			    break;
-			case 2:
-				document.getElementById("awardForm").style.display="none";
-				document.getElementById("allocationForm").style.display="none";
-				document.getElementById("studentForm").style.display="block";
-			    document.getElementById("collaborationForm").style.display="none";
-			    break;
-			case 3:
-				document.getElementById("awardForm").style.display="none";
-				document.getElementById("allocationForm").style.display="none";
-				document.getElementById("studentForm").style.display="none";
-			    document.getElementById("collaborationForm").style.display="block";
-			    break;
-
-		}
+	    if (allAccessRights == 0) document.getElementById("collaboratorFormAdd").style.display="none";
 	}
