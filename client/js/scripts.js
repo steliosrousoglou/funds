@@ -1,6 +1,10 @@
+//Query type global variable
 var queryType = 0;
+
+//Privacy global variable
 var allAccessRights = 1;
 
+//Called to clear all forms
 function clearAllForms() {
 	document.getElementById("awardFormSearch").style.display="none";
     document.getElementById("awardFormUpdate").style.display="none";
@@ -34,17 +38,17 @@ function clearAllForms() {
   	queryType = 0;
 }
 
-  window.onload = function() {
-      //Initial form displays
-      clearAllForms();
+//Initialize event handlers for browser upon window load
+window.onload = function() {
+	clearAllForms();
 
-      var awardFormSearch = document.getElementById("awardSearch");
-      var awardFormAdd = document.getElementById("awardAdd");
-      var awardShowAll = document.getElementById("showAllAward");
-
-      var allocationFormSearch = document.getElementById("allocationSearch");
-      var allocationFormAdd = document.getElementById("allocationAdd");
-      var allocationShowAll = document.getElementById("showAllAllocation");
+	var awardFormSearch = document.getElementById("awardSearch");
+	var awardFormAdd = document.getElementById("awardAdd");
+	var awardShowAll = document.getElementById("showAllAward");
+	
+	var allocationFormSearch = document.getElementById("allocationSearch");
+	var allocationFormAdd = document.getElementById("allocationAdd");
+	var allocationShowAll = document.getElementById("showAllAllocation");
 
   	var studentFormSearch = document.getElementById("studentSearch");
   	var studentFormAdd = document.getElementById("studentAdd");
@@ -108,6 +112,8 @@ function clearAllForms() {
   	
 };
 	
+//Used to direct window to desired div element
+//source: http://stackoverflow.com/questions/11880443/how-to-scroll-browser-to-desired-element-by-javascript
 function findPos(obj) {
     var curtop = 0;
     if (obj.offsetParent) {
@@ -118,6 +124,7 @@ function findPos(obj) {
 	}
 };
 	
+//Unhide all functionalities - user has all privileges
 function allRights(evt) {
 	if (allAccessRights != 1) {
 		allAccessRights = 1;
@@ -127,7 +134,8 @@ function allRights(evt) {
 		document.getElementById("collaboratorBtnAdd").style.display = "block";
 	}
 };
-	
+
+//Update global variable, hiding add/update capabilities	
 function limitedRights(evt) {
 	console.log("trying to restrict");
 	if (allAccessRights != 0) {
@@ -147,12 +155,12 @@ function limitedRights(evt) {
 	}
 };
 	
-//cancel prevent default
+//Update and Cancel buttons are generated in JS - used to prevent defaults
 function updatePreventSubmit(evt) {
 	evt.preventDefault();
 };
 		
-//For Award search, provide a show all awards list, with hyperlinks that bring up a specific award view
+//Given request type and category, makes server request and handles error or JSON result
 function serverRequest(type, request, form) {
 	console.log("request for " + type);
 	var endpointVar;
@@ -194,9 +202,7 @@ function serverRequest(type, request, form) {
     }
     console.log(obj);
     var jsonObj = JSON.stringify(obj);
-    console.log(jsonObj);
-    //add request
-    console.log(endpoint);
+    //Add requests do not return JSON, handled differently
     if (request == 1) {
     	fetch(endpoint, {
 		    method:'POST',
@@ -227,6 +233,7 @@ function serverRequest(type, request, form) {
     }
 };
 
+//Pass award parameters to serverRequest function
 function awardFormReq (evt) {
 	evt.preventDefault();
 	queryType = 1;
@@ -244,7 +251,8 @@ function awardFormReq (evt) {
 	}
 	serverRequest(0, evt.target.req, form);
 };
-	
+
+//Pass allocation parameters to serverRequest function	
 function allocationFormReq (evt) {
 	evt.preventDefault();
 	queryType = 2;
@@ -263,6 +271,7 @@ function allocationFormReq (evt) {
 	serverRequest(1, evt.target.req, form);
 };
 
+//Pass student parameters to serverRequest function
 function studentFormReq (evt) {
 	evt.preventDefault();
 	queryType = 3;
@@ -281,6 +290,7 @@ function studentFormReq (evt) {
 	serverRequest(2, evt.target.req, form);
 };
 
+//Pass collaborator parameters to serverRequest function
 function collaboratorFormReq (evt) {
 	evt.preventDefault();
 	queryType = 4;
@@ -299,6 +309,7 @@ function collaboratorFormReq (evt) {
 	serverRequest(3, evt.target.req, form);
 };
 
+//Display a row's results in a detailed table upon click
 function detailedResult (json) {
 	var tableLeft = document.getElementById("tableLeft");
     tableLeft.innerHTML = "";
@@ -309,7 +320,6 @@ function detailedResult (json) {
 	console.log(json);
 	console.log(jsonObj);
 	for (var key in jsonObj) {
-		// console.log(key + jsonObj[key]);
 		var tableInsert = left? tableLeft: tableRight;
 		left = left == true? false : true;
 		var row = tableInsert.insertRow(-1);
@@ -339,12 +349,14 @@ function detailedResult (json) {
 	window.scroll(0, tableLeft);
 };
 
+//Create on-click event for update
 function createUpdateClick(row, json) {
 	row.onclick = function (event) {
 		updateRender(json, event);
 	};
 };
 
+//Create on-click event for remove
 function createRemoveClick(row, json) {
 	row.onclick = function (event) {
 		var confirmation = confirm("Delete this entry?");
@@ -354,6 +366,7 @@ function createRemoveClick(row, json) {
 	};
 };
 
+//Remove request
 function removeReq(json, event) {
 	event.preventDefault();
 	var endpoint = '';
@@ -395,6 +408,7 @@ function removeReq(json, event) {
 	  .catch((e) => console.log());
 };
 
+//Load Update form upon click - prefill the form
 function updateRender(json, event) {
 	//store it to set after form clear
 	event.preventDefault();
@@ -461,6 +475,7 @@ function updateRender(json, event) {
 	window.scroll(0, updateForm);
 };
 
+//Send update request with array of JSON to server
 function updateReq(params, updateForm) {
 	console.log("params are " + params);
 	// sending JSON stringified object array length 2
@@ -512,6 +527,7 @@ function updateReq(params, updateForm) {
 	  .catch((e) => console.log());
 };
 	
+//Create quick links between detailed views and corresponding searches of those fields
 function createResultLinks(rows) {
 	console.log("current type is " + queryType);
 	for (var i = 0; i < rows.length; i++) {
@@ -569,31 +585,35 @@ function createResultLinks(rows) {
 	}	
 };
 
-		
+//Link to award quick search
 function createAwardClick(row, jsonObj) {
 	row.onclick = function () { 
 		awardLinkQuery(jsonObj);
 	};
 };
-	
+
+//Link to allocation quick search	
 function createAllocationClick(row, jsonObj) {
 	row.onclick = function () {
 		allocationLinkQuery(jsonObj);
 	};
 };
-	
+
+//Link to student quick search	
 function createStudentClick(row, jsonObj) {
 	row.onclick = function () {
 		studentLinkQuery(jsonObj);
 	};
 };
-	
+
+//Link to collaborator quick search	
 function createCollaboratorClick(row, jsonObj) {
 	row.onclick = function () {
 		collaboratorLinkQuery(jsonObj);
 	};
 };
-	
+
+//Award quick search request	
 function awardLinkQuery(jsonObj) {
 	console.log("queryType was " + queryType.toString());
 	queryType = 1;
@@ -609,6 +629,7 @@ function awardLinkQuery(jsonObj) {
 	  .catch((e) => console.log(e));
 };
 
+//Allocation quick search request
 function allocationLinkQuery(jsonObj) {
 	console.log("queryType was " + queryType.toString());
 	queryType = 2;
@@ -624,6 +645,7 @@ function allocationLinkQuery(jsonObj) {
 	  .catch((e) => console.log(e));
 };
 
+//Student quick search request
 function studentLinkQuery(jsonObj) {
 	console.log("queryType was " + queryType.toString());
 	queryType = 3;
@@ -639,6 +661,7 @@ function studentLinkQuery(jsonObj) {
 	  .catch((e) => console.log(e));
 };
 	
+//Collaborator quick search request
 function collaboratorLinkQuery(jsonObj) {
 	console.log("queryType was " + queryType.toString());
 	queryType = 4;
@@ -654,12 +677,14 @@ function collaboratorLinkQuery(jsonObj) {
 	  .catch((e) => console.log(e));
 };
 
+//On click handler for rendering detailed results
 function createRowClick(row, text) {
 	row.onclick = function () {
 		detailedResult(text);
 	};
 };
 
+//Display query result from server into list of results
 function renderResults(jsonObj) {
 	console.log(jsonObj);
 	document.getElementById("awardFormSearch").style.display="none";
@@ -726,6 +751,7 @@ function renderResults(jsonObj) {
     window.scroll(0,findPos(resultTable));
 };
 	
+//Render appropriate form from the navbar
 function renderForm(a, b) {
 	var formType = '';
 	switch(b) {
