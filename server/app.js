@@ -28,14 +28,14 @@ var connection = mysql.createConnection({
 /* Initialize App */
 var app = express();
 
-app.use(express.static('client'));
+app.use(express.static('../client'));
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({
     extended: true,
 }));
 
-app.use(express.static('client'));
+app.use(express.static('../client'));
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
