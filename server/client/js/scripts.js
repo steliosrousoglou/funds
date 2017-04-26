@@ -1,6 +1,9 @@
 //Query type global variable
 var queryType = 0;
 
+//Displaying Award total funding
+var displayFunding = false;
+
 //Privacy global variable
 var allAccessRights = 1;
 
@@ -37,6 +40,11 @@ function clearAllForms() {
   	document.getElementById("collaboratorFormAdd").reset();
   	queryType = 0;
 }
+
+Number.prototype.format = function(n, x) {
+    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+    return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+};
 
 //Initialize event handlers for browser upon window load
 window.onload = function() {
@@ -137,7 +145,6 @@ function allRights(evt) {
 
 //Update global variable, hiding add/update capabilities	
 function limitedRights(evt) {
-	console.log("trying to restrict");
 	if (allAccessRights != 0) {
 		allAccessRights = 0;
 		document.getElementById("awardBtnAdd").style.display = "none";
@@ -162,7 +169,7 @@ function updatePreventSubmit(evt) {
 		
 //Given request type and category, makes server request and handles error or JSON result
 function serverRequest(type, request, form) {
-	console.log("request for " + type);
+	displayFunding = false;
 	var endpointVar;
 	switch (type) {
 		case 0:
@@ -192,15 +199,12 @@ function serverRequest(type, request, form) {
 	}
 	var obj = {};
 	var formInputs = document.getElementById(form).elements;
-	console.log(formInputs);
 	for(var i = 0 ; i < formInputs.length ;i++) {
         var item = formInputs.item(i);
         if (item.value.length > 1) {
         	obj[item.name] = item.value;
-        	console.log(item.value);
         }
     }
-    console.log(obj);
     var jsonObj = JSON.stringify(obj);
     //Add requests do not return JSON, handled differently
     if (request == 1) {
@@ -317,8 +321,6 @@ function detailedResult (json) {
 	tableRight.innerHTML = "";
 	var jsonObj = JSON.parse(json);
 	var left = true;
-	console.log(json);
-	console.log(jsonObj);
 	for (var key in jsonObj) {
 		var tableInsert = left? tableLeft: tableRight;
 		left = left == true? false : true;
@@ -385,11 +387,9 @@ function removeReq(json, event) {
 			break;
 	}
 	var nonNullObj = JSON.parse(json);
-	console.log(json);
 	for (var key in nonNullObj) {
 		if (!nonNullObj[key] || nonNullObj[key] === "") delete nonNullObj[key];
 	}
-	console.log(JSON.stringify(nonNullObj));
     fetch(endpoint, {
 	    method:'POST',
 	    headers: {
@@ -405,7 +405,7 @@ function removeReq(json, event) {
 				 	clearAllForms();
 				 }
 				})
-	  .catch((e) => console.log());
+	  .catch((e) => console.log(e));
 };
 
 //Load Update form upon click - prefill the form
@@ -442,13 +442,10 @@ function updateRender(json, event) {
 	}
 	document.getElementById(updateForm).reset();
 	document.getElementById(updateForm).style.display = 'block';
-	console.log(json);
 	var formFill = JSON.parse(json);
-	console.log(formFill);
 	var formElements = document.getElementById(updateForm).elements;
 	for (var i = 0; i < formElements.length; i++) {
 		var item = formElements.item(i);
-		console.log(item);
 		if ((item.name === "start_date" || item.name === "end_date" || 
 		item.name == "form_s" || item.name == "fes_due") && (formFill[item.name] != null)) {
 			item.value = formFill[item.name].substring(0,10);
@@ -477,7 +474,6 @@ function updateRender(json, event) {
 
 //Send update request with array of JSON to server
 function updateReq(params, updateForm) {
-	console.log("params are " + params);
 	// sending JSON stringified object array length 2
 	var jsonUpdates = {};
 	var jsonParams = JSON.parse(params);
@@ -500,7 +496,6 @@ function updateReq(params, updateForm) {
 	for(var i = 0 ; i < formInputs.length ;i++) {
         var item = formInputs.item(i);
         if (item.name != "update" && item.name != "cancel") jsonUpdates[item.name] = item.value;
-        console.log(item.value);
         
     }
     var obj = {};
@@ -508,8 +503,6 @@ function updateReq(params, updateForm) {
     obj[1] = jsonParams;
     var jsonObj = JSON.stringify(obj);
     //an object with two jsons becomes jsonified
-    console.log(endpoint);
-    console.log(jsonObj);
     fetch(endpoint, {
 	    method:'POST',
 	    headers: {
@@ -529,7 +522,6 @@ function updateReq(params, updateForm) {
 	
 //Create quick links between detailed views and corresponding searches of those fields
 function createResultLinks(rows) {
-	console.log("current type is " + queryType);
 	for (var i = 0; i < rows.length; i++) {
 		//award -> allocation
 		if (rows[i].cells[1].innerHTML == "" ) continue;
@@ -538,7 +530,6 @@ function createResultLinks(rows) {
 			var obj = {};
 			obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 			var jsonObj = JSON.stringify(obj);
-			console.log("adding allocation click");
 			createAllocationClick(rows[i], jsonObj);
 		}
 		//allocation -> student
@@ -546,7 +537,6 @@ function createResultLinks(rows) {
 			var obj = {};
 			obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 			var jsonObj = JSON.stringify(obj);
-			console.log("adding student click");
 			createStudentClick(rows[i], jsonObj);
 		}
 		//allocation -> award
@@ -555,7 +545,6 @@ function createResultLinks(rows) {
 			var obj = {};
 			obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 			var jsonObj = JSON.stringify(obj);
-			console.log("adding award click");
 			createAwardClick(rows[i], jsonObj);
 		}
 		//student -> allocation
@@ -563,7 +552,6 @@ function createResultLinks(rows) {
 			var obj = {};
 			obj[rows[i].cells[0].innerHTML] = rows[i].cells[1].innerHTML;
 			var jsonObj = JSON.stringify(obj);
-			console.log("adding allocation click");
 			createAllocationClick(rows[i], jsonObj);
 		} 
 		//student -> collaborator
@@ -571,7 +559,6 @@ function createResultLinks(rows) {
 			var obj = {};
 			obj["myfinance_code"] = rows[i].cells[1].innerHTML;
 			var jsonObj = JSON.stringify(obj);
-			console.log("adding collaborator click");
 			createCollaboratorClick(rows[i], jsonObj);
 		} 
 		//collaborator -> student
@@ -579,7 +566,6 @@ function createResultLinks(rows) {
 			var obj = {};
 			obj["collaborator_code"] = rows[i].cells[1].innerHTML;
 			var jsonObj = JSON.stringify(obj);
-			console.log("adding student click");
 			createStudentClick(rows[i], jsonObj);
 		} 
 	}	
@@ -615,9 +601,8 @@ function createCollaboratorClick(row, jsonObj) {
 
 //Award quick search request	
 function awardLinkQuery(jsonObj) {
-	console.log("queryType was " + queryType.toString());
 	queryType = 1;
-	console.log("searching for awardLink with " + jsonObj);
+	displayFunding = false;
 	fetch('/get_award', {
 	    method:'POST',
 	    headers: {
@@ -631,9 +616,8 @@ function awardLinkQuery(jsonObj) {
 
 //Allocation quick search request
 function allocationLinkQuery(jsonObj) {
-	console.log("queryType was " + queryType.toString());
 	queryType = 2;
-	console.log("searching for allocationLink with " + jsonObj);
+	displayFunding = true;
 	fetch('/get_allocation', {
 	    method:'POST',
 	    headers: {
@@ -647,9 +631,8 @@ function allocationLinkQuery(jsonObj) {
 
 //Student quick search request
 function studentLinkQuery(jsonObj) {
-	console.log("queryType was " + queryType.toString());
 	queryType = 3;
-	console.log("searching for studentLink with " + jsonObj);
+	displayFunding = false;
 	fetch('/get_student', {
 	    method:'POST',
 	    headers: {
@@ -663,9 +646,8 @@ function studentLinkQuery(jsonObj) {
 	
 //Collaborator quick search request
 function collaboratorLinkQuery(jsonObj) {
-	console.log("queryType was " + queryType.toString());
 	queryType = 4;
-	console.log("searching for collaboratorLink with " + jsonObj);
+	displayFunding = false;
 	fetch('/get_collaborator', {
 	    method:'POST',
 	    headers: {
@@ -686,14 +668,11 @@ function createRowClick(row, text) {
 
 //Display query result from server into list of results
 function renderResults(jsonObj) {
-	console.log(jsonObj);
 	document.getElementById("awardFormSearch").style.display="none";
 	document.getElementById("allocationFormSearch").style.display="none";
 	document.getElementById("studentFormSearch").style.display="none";
 	document.getElementById("collaboratorFormSearch").style.display="none";
 	document.getElementById("descriptionList").style.display="block";
-	console.log("rendering");
-	console.log(jsonObj);
 	if (jsonObj.length == 0) {
 		alert("No results returned.");
 		clearAllForms();
@@ -706,6 +685,7 @@ function renderResults(jsonObj) {
 	var columns = jsonObj[0].length;
 	var row = document.createElement("TR");
 	//headers of result table will be the keys of database
+	var totalFunding = 0;
 	for (var key in jsonObj[0]) {
 		if (key === "ID") continue;
 		var headerCell = document.createElement("TH");
@@ -727,6 +707,12 @@ function renderResults(jsonObj) {
 	    	if ((key === "start_date" || key === "end_date" || key == "form_s" || key == "fes_due") && (obj[key] != null && obj[key].length >= 10)) {
 	    		cellText = document.createTextNode(obj[key].substring(0, 10));
 	    	}
+	    	else if (key === "award_amount" || key === "budget" || key === "amount" || key === "stipend" || key === "fee" || key === "other") {
+	    		cellText = document.createTextNode(obj[key].format(2));
+	    		if (displayFunding) {
+	    			totalFunding += obj[key];
+	    		}
+	    	}
 	    	else cellText = document.createTextNode(obj[key]);
 	    	cell.appendChild(cellText);
 	    	row.appendChild(cell);
@@ -742,6 +728,18 @@ function renderResults(jsonObj) {
 	var rows = tableBody.rows;
 	for (var i = 0; i < rows.length; i++) {
 		createRowClick(rows[i], rows[i].cells["jsonText"].innerHTML);
+	}
+	if (totalFunding > 0) {
+		var row = document.createElement("TR");
+		var cellText = document.createTextNode("Total Funding:");
+		var cell = document.createElement("TD");
+		cell.appendChild(cellText);
+		row.appendChild(cell);
+		var cellText2 = document.createTextNode(totalFunding.format(2));
+		var cell2 = document.createElement("TD");
+		cell2.appendChild(cellText2);
+		row.appendChild(cell2);
+		tableBody.appendChild(row);
 	}
 	table.appendChild(tableBody);
 	var resultTable = document.getElementById("resultTable");

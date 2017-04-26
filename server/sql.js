@@ -29,7 +29,6 @@ const getAll = (connection, table) => new Promise((resolve, reject) => {
     const query = 'SELECT * FROM ' + table;
     connection.query(query, function(err, results) {
         if (!err) {
-            // console.log(results);
             resolve(results);
         } else {
             console.log(err);
@@ -77,8 +76,6 @@ const getTotalFunding = (connection, table) => new Promise((resolve, reject) => 
  * @param {string} table
  */
 const removeFromTable = (connection, obj, table) => new Promise((resolve, reject) => {
-    console.log(typeof(obj));
-    console.log(helpers.formatANDs(obj));
     const query = 'DELETE FROM ' + table + ' WHERE ' + helpers.formatANDs(obj);
     connection.query(query, function(err, rows) {
         if (!err) {
@@ -95,8 +92,6 @@ const removeFromTable = (connection, obj, table) => new Promise((resolve, reject
  * @param {JSON} table
  */
 const updateTable = (connection, jsonArray, table) => new Promise((resolve, reject) => {
-    console.log(typeof(jsonArray[1]));
-    console.log(helpers.formatANDs(jsonArray[1]));
     const query = 'UPDATE ' + table + ' SET ? WHERE ' + helpers.formatANDs(jsonArray[1]);
     connection.query(query, jsonArray[0], function(err, res, rows) {
         if (!err) {

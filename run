@@ -1,0 +1,8 @@
+#! /bin/bash
+
+# Run this script by doing "./run" in a 
+# terminal to launch the application
+
+mysql-ctl restart
+cd ~/workspace/funds/server
+node app.js
